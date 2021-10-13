@@ -1,12 +1,14 @@
 package uniandes.dpoo.proyecto1.modelo;
 import java.util.ArrayList;
 
-public class ProductoPorPeso{
-	private float peso;
-	public ProductoPorPeso (float peso) {
-		this.peso = peso;
+public class ProductoPorPeso extends Producto{
+	public ProductoPorPeso (String nombre, String descripcion, int codigo, CondicionAlmacenamiento condicion,
+							float cantidadVendida, float dineroAdquirido, String unidad) {
+		super(nombre, descripcion, codigo, condicion, cantidadVendida, dineroAdquirido, unidad);
 	}
-	public float getPeso() {
-		return peso;
+
+	@Override
+	public float costoProductos(float cantidad) {
+		return 0;
 	}
 }
