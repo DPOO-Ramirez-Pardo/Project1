@@ -6,12 +6,14 @@ public class Lote {
 
 private final Date fechaLlegada;
 private final Date fechaVencimiento;
-private final float cantidad;
+private float cantidadInicial;
+private float cantidadActual;
 
-public Lote(Date fechaLlegada, Date fechaVencimiento, float cantidad) {
+public Lote(Date fechaLlegada, Date fechaVencimiento, float cantidadInicial, float cantidadActual) {
 	this.fechaLlegada = fechaLlegada;
 	this.fechaVencimiento = fechaVencimiento;
-	this.cantidad = cantidad;
+	this.cantidadInicial = cantidadInicial;
+	this.cantidadActual = cantidadActual;
 }
 
 public Date getFechaLlegada() {
@@ -22,7 +24,11 @@ public Date getFechaVencimiento() {
 	return fechaVencimiento;
 }
 
-public float getCantidad() {
-	return cantidad;
+public float getCantidadInicial() {
+	return cantidadInicial;
+}
+
+public float getCantidadActual() {
+	return cantidadActual;
 }
 }
