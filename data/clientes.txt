@@ -1,0 +1,2 @@
+Santiago Ivan Pardo,1000932405,19,100.0,Masculino,Estudiante,Soltero
+Diego Alejandro Ramirez Garrido,1000180835,19,200.0,Masculino,Estudiante,Soltero
