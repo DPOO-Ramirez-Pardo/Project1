@@ -14,8 +14,6 @@ public abstract class Producto {
 	protected ArrayList<Categoria> categorias;
 	protected String unidad;
 
-
-
 	public Producto(String nombre, String descripcion, int codigo, CondicionAlmacenamiento condicion,
 					float cantidadVendida, float dineroAdquirido, String unidad) {
 		this.nombre = nombre;
@@ -42,12 +40,32 @@ public abstract class Producto {
 		return codigo;
 	}
 
+	public CondicionAlmacenamiento getCondicion() {
+		return condicion;
+	}
 
-	public abstract float costoProductos(float cantidad);
+	public float getCantidadVendida() {
+		return cantidadVendida;
+	}
+
+	public float getDineroAdquirido() {
+		return dineroAdquirido;
+	}
+
+	public LinkedList<Lote> getLotes() {
+		return lotes;
+	}
+
+	public ArrayList<Categoria> getCategorias() {
+		return categorias;
+	}
 
 	public String getUnidad() {
 		return unidad;
 	}
+
+
+	public abstract float costoProductos(float cantidad);
 
 	public String mostrarCategorias() {
 		StringBuilder builder = new StringBuilder(categorias.get(0).getNombre());
@@ -59,10 +77,6 @@ public abstract class Producto {
 
 	public String mostrarCondicionAlmacenamiento(){
 		return condicion.toString();
-	}
-
-	public CondicionAlmacenamiento getCondicion() {
-		return condicion;
 	}
 
 	public void añadirLote(Lote lote) {
@@ -77,6 +91,11 @@ public abstract class Producto {
 		while (lotes.getFirst().getFechaVencimiento().before(fecha)){
 			lotes.removeFirst();
 		}
+	}
+
+	public String lineaArchivo(){
+		return nombre +","+descripcion+","+Integer.toString(codigo)+","+condicion.toString()+","
+				+Float.toString(cantidadVendida)+","+Float.toString(dineroAdquirido)+","+unidad;
 	}
 }
 
