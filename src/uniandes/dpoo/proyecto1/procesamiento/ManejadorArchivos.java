@@ -53,18 +53,18 @@ public class ManejadorArchivos {
         Scanner scanner = getScanner(path);
         while (scanner.hasNextLine()) {
             ArrayList<String> data = getData(scanner);
-            String nombre = data.get(0);
-            String descripcion = data.get(1);
-            int codigo = Integer.parseInt(data.get(2));
-            CondicionAlmacenamiento condicionAlmacenamiento = CondicionAlmacenamiento.valueOf(data.get(3));
-            float cantidadVendida = Float.parseFloat(data.get(4));
-            float dineroAdquirido = Float.parseFloat(data.get(5));
-            String unidad = data.get(6);
-            añadirProducto(data, nombre, descripcion, codigo, condicionAlmacenamiento, cantidadVendida, dineroAdquirido, unidad);
+            cargarProducto(data);
         }
     }
 
-    private void añadirProducto(ArrayList<String> data, String nombre, String descripcion, int codigo, CondicionAlmacenamiento condicionAlmacenamiento, float cantidadVendida, float dineroAdquirido, String unidad) {
+    private void cargarProducto(ArrayList<String> data) {
+        String nombre = data.get(0);
+        String descripcion = data.get(1);
+        int codigo = Integer.parseInt(data.get(2));
+        CondicionAlmacenamiento condicionAlmacenamiento = CondicionAlmacenamiento.valueOf(data.get(3));
+        float cantidadVendida = Float.parseFloat(data.get(4));
+        float dineroAdquirido = Float.parseFloat(data.get(5));
+        String unidad = data.get(6);
         if (data.size() > 7){
             float peso = Float.parseFloat(data.get(7));
             productos.put(codigo, new ProductoEmpaquetado(nombre, descripcion, codigo, condicionAlmacenamiento,
@@ -80,13 +80,16 @@ public class ManejadorArchivos {
         crearCategorias(scanner);
         String line;
         while (scanner.hasNextLine()) {
-            line = scanner.nextLine();
-            ArrayList<String> data = new ArrayList<>(Arrays.asList(line.split(",")));
-            String nombreCategoria = data.get(0);
-            int codigoProducto = Integer.parseInt(data.get(1));
-            categorias.get(nombreCategoria).añadirProducto(productos.get(codigoProducto));
-            productos.get(codigoProducto).añadirCategoria(categorias.get(nombreCategoria));
+            ArrayList<String> data = getData(scanner);
+            categorizarProducto(data);
         }
+    }
+
+    private void categorizarProducto(ArrayList<String> data) {
+        String nombreCategoria = data.get(0);
+        int codigoProducto = Integer.parseInt(data.get(1));
+        categorias.get(nombreCategoria).añadirProducto(productos.get(codigoProducto));
+        productos.get(codigoProducto).añadirCategoria(categorias.get(nombreCategoria));
     }
 
     private void crearCategorias(Scanner scanner) {
@@ -100,15 +103,20 @@ public class ManejadorArchivos {
         Scanner scanner = getScanner(path);
         while (scanner.hasNextLine()){
             ArrayList<String> data = getData(scanner);
-            String nombre = data.get(0);
-            int cedula = Integer.parseInt(data.get(1));
-            int edad = Integer.parseInt(data.get(2));
-            float puntos = Float.parseFloat(data.get(3));
-            Sexo sexo = Sexo.valueOf(data.get(4));
-            SituacionEmpleo situacionEmpleo = SituacionEmpleo.valueOf(data.get(5));
-            EstadoCivil estadoCivil = EstadoCivil.valueOf(data.get(6));
-            clientes.put(cedula, new Cliente(nombre, cedula, edad, puntos, sexo, situacionEmpleo, estadoCivil));
+            Cliente cliente = cargarCliente(data);
+            clientes.put(cliente.getCedula(), cliente);
         }
+    }
+
+    private Cliente cargarCliente(ArrayList<String> data) {
+        String nombre = data.get(0);
+        int cedula = Integer.parseInt(data.get(1));
+        int edad = Integer.parseInt(data.get(2));
+        float puntos = Float.parseFloat(data.get(3));
+        Sexo sexo = Sexo.valueOf(data.get(4));
+        SituacionEmpleo situacionEmpleo = SituacionEmpleo.valueOf(data.get(5));
+        EstadoCivil estadoCivil = EstadoCivil.valueOf(data.get(6));
+        return new Cliente(nombre, cedula, edad, puntos, sexo, situacionEmpleo, estadoCivil);
     }
 
     private void cargarLotes(String path) throws FileNotFoundException, ParseException {
@@ -116,29 +124,38 @@ public class ManejadorArchivos {
         while (scanner.hasNextLine()){
             ArrayList<String> data = getData(scanner);
             int codigo = Integer.parseInt(data.get(0));
-            Date fechaLlegada = DateFormat.getDateInstance().parse(data.get(1));
-            Date fechaVencimiento = DateFormat.getDateInstance().parse(data.get(2));
-            float cantidadInicial = Float.parseFloat(data.get(3));
-            float cantidadActual = Float.parseFloat(data.get(4));
-            productos.get(codigo).añadirLote(new Lote(fechaLlegada, fechaVencimiento, cantidadInicial, cantidadActual));
+            Lote lote = cargarLote(data);
+            productos.get(codigo).añadirLote(lote);
         }
+    }
+
+    private Lote cargarLote(ArrayList<String> data) throws ParseException {
+        Date fechaLlegada = DateFormat.getDateInstance().parse(data.get(1));
+        Date fechaVencimiento = DateFormat.getDateInstance().parse(data.get(2));
+        float cantidadInicial = Float.parseFloat(data.get(3));
+        float cantidadActual = Float.parseFloat(data.get(4));
+        return new Lote(fechaLlegada, fechaVencimiento, cantidadInicial, cantidadActual);
     }
 
     private void cargarRecibos(String path) throws FileNotFoundException, ParseException {
         Scanner scanner = getScanner(path);
         while (scanner.hasNextLine()){
             ArrayList<String> data = getData(scanner);
-            int cedula = Integer.parseInt(data.get(0));
-            Date fecha = DateFormat.getDateInstance().parse(data.get(1));
-            ArrayList<CantidadProducto> cantidadesProductos = new ArrayList<>();
-            for (int i = 2; i < cantidadesProductos.size(); i+=2) {
-                float cantidad = Float.parseFloat(data.get(i));
-                Producto producto = productos.get(Integer.parseInt(data.get(i+1)));
-                cantidadesProductos.add(new CantidadProducto(cantidad, producto));
-            }
-            Recibo recibo = new Recibo(fecha, clientes.get(cedula), cantidadesProductos);
-            clientes.get(cedula).añadirRecibo(recibo);
+            Recibo recibo = cargarRecibo(data);
+            clientes.get(recibo.getCliente().getCedula()).añadirRecibo(recibo);
         }
+    }
+
+    private Recibo cargarRecibo(ArrayList<String> data) throws ParseException {
+        int cedula = Integer.parseInt(data.get(0));
+        Date fecha = DateFormat.getDateInstance().parse(data.get(1));
+        ArrayList<CantidadProducto> cantidadesProductos = new ArrayList<>();
+        for (int i = 2; i < data.size(); i+=2) {
+            float cantidad = Float.parseFloat(data.get(i));
+            Producto producto = productos.get(Integer.parseInt(data.get(i+1)));
+            cantidadesProductos.add(new CantidadProducto(cantidad, producto));
+        }
+        return new Recibo(fecha, clientes.get(cedula), cantidadesProductos);
     }
 
     private ArrayList<String> getData(Scanner scanner) {
@@ -156,7 +173,6 @@ public class ManejadorArchivos {
         guardarClientes();
         guardarCategorias();
         guardarProductos();
-        guardarLotes();
     }
 
     private void guardarClientes() throws IOException {
@@ -172,22 +188,49 @@ public class ManejadorArchivos {
         writeFile(recibosBuilder, pathRecibos);
     }
 
-    private void writeFile(StringBuilder clientesBuilder, String path) throws IOException {
+    private void writeFile(StringBuilder builder, String path) throws IOException {
         FileWriter writer = new FileWriter(path);
-        writer.write(clientesBuilder.toString());
+        writer.write(builder.toString());
         writer.close();
     }
 
-    private void guardarCategorias(){
-
+    private void guardarCategorias() throws IOException {
+        StringBuilder builder = new StringBuilder();
+        añadirLineaNombresCategorias(builder);
+        añadirLineasCategoriasProductos(builder);
+        writeFile(builder, pathCategorias);
     }
 
-    private void guardarProductos(){
-
+    private void añadirLineasCategoriasProductos(StringBuilder builder) {
+        for (Categoria categoria: categorias.values()){
+            for (Producto producto: categoria.getProductos()){
+                builder.append(categoria.getNombre()).append(',').append(producto.getCodigo()).append('\n');
+            }
+        }
     }
 
-    private void guardarLotes(){
+    private void añadirLineaNombresCategorias(StringBuilder builder) {
+        boolean first = true;
+        for (String key: categorias.keySet()){
+            if (first){
+                first = false;
+                builder.append(key);
+            } else builder.append(',').append(key);
+        }
+        builder.append('\n');
+    }
 
+    private void guardarProductos() throws IOException {
+        StringBuilder productosBuilder = new StringBuilder();
+        StringBuilder lotesBuilder = new StringBuilder();
+        for(Producto producto: productos.values()){
+            productosBuilder.append(producto.lineaArchivo()).append('\n');
+            for (Lote lote: producto.getLotes()){
+                lotesBuilder.append(producto.getCodigo()).append(',').append(lote.lineaArchivo()).append('\n');
+            }
+        }
+        writeFile(productosBuilder, pathProductos);
+        writeFile(lotesBuilder, pathLotes);
     }
 
 

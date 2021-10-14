@@ -1,4 +1,5 @@
 package uniandes.dpoo.proyecto1.modelo;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 
@@ -16,19 +17,26 @@ public Lote(Date fechaLlegada, Date fechaVencimiento, float cantidadInicial, flo
 	this.cantidadActual = cantidadActual;
 }
 
-public Date getFechaLlegada() {
-	return fechaLlegada;
-}
+	public Date getFechaLlegada() {
+		return fechaLlegada;
+	}
 
-public Date getFechaVencimiento() {
-	return fechaVencimiento;
-}
+	public Date getFechaVencimiento() {
+		return fechaVencimiento;
+	}
 
-public float getCantidadInicial() {
-	return cantidadInicial;
-}
+	public float getCantidadInicial() {
+		return cantidadInicial;
+	}
 
-public float getCantidadActual() {
-	return cantidadActual;
-}
+	public float getCantidadActual() {
+		return cantidadActual;
+	}
+
+	public String lineaArchivo(){
+		return DateFormat.getDateInstance().format(fechaLlegada) +","
+				+DateFormat.getDateInstance().format(fechaVencimiento)+","
+				+Float.toString(cantidadInicial)+","+Float.toString(cantidadActual);
+	}
+
 }

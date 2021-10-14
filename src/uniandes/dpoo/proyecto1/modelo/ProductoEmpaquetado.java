@@ -16,4 +16,9 @@ public class ProductoEmpaquetado extends Producto{
 	public float costoProductos(float cantidad) {
 		return 0;
 	}
+
+	@Override
+	public String lineaArchivo(){
+		return super.lineaArchivo() + "," + Float.toString(peso);
+	}
 }
