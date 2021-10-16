@@ -12,7 +12,7 @@ import java.util.*;
 
 public class ManejadorArchivos {
     private HashMap<Integer, Producto> productos;
-    private HashMap<String, Categoria> categorias;
+    private TreeMap<String, Categoria> categorias;
     private HashMap<Integer, Cliente> clientes;
     private String pathClientes;
     private String pathCategorias;
@@ -24,7 +24,7 @@ public class ManejadorArchivos {
         return productos;
     }
 
-    public HashMap<String, Categoria> getCategorias() {
+    public TreeMap<String, Categoria> getCategorias() {
         return categorias;
     }
 
@@ -35,7 +35,7 @@ public class ManejadorArchivos {
     public ManejadorArchivos(String pathClientes, String pathCategorias, String pathProductos,
                              String pathLotes, String pathRecibos) throws FileNotFoundException, ParseException {
         clientes = new HashMap<>();
-        categorias = new HashMap<>();
+        categorias = new TreeMap<>();
         productos = new HashMap<>();
         this.pathCategorias = pathCategorias;
         this.pathClientes = pathClientes;

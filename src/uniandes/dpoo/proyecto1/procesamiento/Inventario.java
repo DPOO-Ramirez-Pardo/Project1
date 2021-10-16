@@ -25,8 +25,8 @@ public class Inventario extends ProcesamientoSupermercado{
 
     }
 
-    private void mostrarCondicionAlmacenamiento(){
-
+    public String condicionAlmacenamiento(String nombreProducto){
+        return null;
     }
 
     private void agregarCategoria(){
