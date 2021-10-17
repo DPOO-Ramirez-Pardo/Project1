@@ -8,11 +8,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeMap;
 
 public abstract class ProcesamientoSupermercado {
-    protected ArrayList<Producto> productos;
-    protected ArrayList<Categoria> categorias;
-    protected ArrayList<Cliente> clientes;
+    protected HashMap<Integer, Producto> productosPorCodigo;
+    protected TreeMap<String, Producto> productosPorNombre;
+    protected TreeMap<String, Categoria> categorias;
+    protected HashMap<Integer, Cliente> clientesPorCedula;
     protected ManejadorArchivos manejadorArchivos;
 
     public ProcesamientoSupermercado(){
