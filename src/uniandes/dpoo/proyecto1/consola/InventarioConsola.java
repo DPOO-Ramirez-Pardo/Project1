@@ -51,8 +51,9 @@ public class InventarioConsola {
         	eliminarLotesVencidos();
         	activo = true;
         case 10:
-        	activo = true;
-        	break;
+            inventario.cerrarProcesamiento();
+        	activo = false;
+        break;
             default:
             	System.out.println(MessageFormat.format("La opción {0} no existe. Escoja una opción del menú.", Integer.toString(opcion)));
             	activo = true;

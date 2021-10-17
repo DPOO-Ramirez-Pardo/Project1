@@ -97,5 +97,7 @@ public abstract class Producto {
 		return nombre +","+descripcion+","+Integer.toString(codigo)+","+condicion.toString()+","
 				+Float.toString(cantidadVendida)+","+Float.toString(dineroAdquirido)+","+unidad;
 	}
+
+	public abstract String stringInformacion();
 }
 

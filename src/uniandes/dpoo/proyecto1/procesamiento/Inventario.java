@@ -6,14 +6,16 @@ import uniandes.dpoo.proyecto1.modelo.Producto;
 import uniandes.dpoo.proyecto1.modelo.Recibo;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Inventario extends ProcesamientoSupermercado{
 
-    public void eliminarLotesVencidos(){
+    private void eliminarLotesVencidos(String nombreProducto){
 
     }
 
-    public void informacionInventarioProducto(){
+    private void informacionInventarioProducto(){
 
     }
 
