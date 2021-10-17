@@ -2,3 +2,7 @@
 Project1.iml
 
 .idea/
+
+out/
+
+bin/
