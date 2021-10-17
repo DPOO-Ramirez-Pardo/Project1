@@ -9,19 +9,19 @@ import java.util.ArrayList;
 
 public class Inventario extends ProcesamientoSupermercado{
 
-    private void eliminarLotesVencidos(){
+    public void eliminarLotesVencidos(){
 
     }
 
-    private void informacionInventarioProducto(){
+    public void informacionInventarioProducto(){
 
     }
 
-    private void desempenoFinancieroProducto(){
+    public void desempenoFinancieroProducto(){
 
     }
 
-    private void recibirCarga(){
+    public void recibirCarga(){
 
     }
 
@@ -29,19 +29,19 @@ public class Inventario extends ProcesamientoSupermercado{
         return null;
     }
 
-    private void agregarCategoria(){
+    public void agregarCategoria(){
 
     }
 
-    private void categorizarProducto(){
+    public void categorizarProducto(){
 
     }
 
-    private void agregarProducto(){
+    public void agregarProducto(){
 
     }
 
-    private void mostrarInformacionProducto(){
+    public void mostrarInformacionProducto(){
 
     }
 
