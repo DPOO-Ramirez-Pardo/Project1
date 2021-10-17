@@ -1,4 +1,5 @@
 package uniandes.dpoo.proyecto1.modelo;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class ProductoEmpaquetado extends Producto{
@@ -20,5 +21,18 @@ public class ProductoEmpaquetado extends Producto{
 	@Override
 	public String lineaArchivo(){
 		return super.lineaArchivo() + "," + Float.toString(peso);
+	}
+
+	@Override
+	public String stringInformacion() {
+		return MessageFormat.format(
+				"""
+						Producto: {0}
+						Descripción: {1}
+						Código de Barras: {2}
+						Condición de Almacenamiento: {3}
+						
+						""", nombre, descripcion, codigo, condicion,
+		);
 	}
 }
