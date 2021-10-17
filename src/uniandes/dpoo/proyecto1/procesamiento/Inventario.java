@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class Inventario extends ProcesamientoSupermercado{
 
-    private void eliminarLotesVencidos(){
+    private void eliminarLotesVencidos(String nombreProducto){
 
     }
 

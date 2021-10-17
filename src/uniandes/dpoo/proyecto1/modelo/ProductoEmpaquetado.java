@@ -32,7 +32,7 @@ public class ProductoEmpaquetado extends Producto{
 						Código de Barras: {2}
 						Condición de Almacenamiento: {3}
 						
-						""", nombre, descripcion, codigo, condicion,
+						""", nombre, descripcion, codigo, condicion
 		);
 	}
 }
