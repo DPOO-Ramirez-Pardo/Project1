@@ -72,9 +72,9 @@ public abstract class ProcesamientoSupermercado {
         } else if (ceiling == null) {
             return new Exception("Nombre no encontrado. Quizá quiciste decir " + floor + ".");
         } else if (floor == null) {
-            return new Exception("Nombre no encontrado. Quizá quiciste decir" + ceiling + ".");
+            return new Exception("Nombre no encontrado. Quizá quiciste decir " + ceiling + ".");
         } else {
-            return new Exception("Nombre no encontrado. Quizá quiciste decir" + floor + " ó " + ceiling + ".");
+            return new Exception("Nombre no encontrado. Quizá quiciste decir " + floor + " ó " + ceiling + ".");
         }
     }
 
@@ -89,6 +89,13 @@ public abstract class ProcesamientoSupermercado {
         try {
             manejadorArchivos = new ManejadorArchivos("data/clientes.txt","data/categorias.txt",
                     "data/productos.txt", "data/lotes.txt", "data/recibos.txt");
+            productosPorCodigo = manejadorArchivos.getProductos();
+            clientesPorCedula = manejadorArchivos.getClientes();
+            categorias = manejadorArchivos.getCategorias();
+            productosPorNombre = new TreeMap<>();
+            for(Producto producto: productosPorCodigo.values()){
+                productosPorNombre.put(producto.getNombre(), producto);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (ParseException e) {

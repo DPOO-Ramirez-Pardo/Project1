@@ -120,7 +120,7 @@ public class ManejadorArchivos {
         return new Cliente(nombre, cedula, edad, puntos, sexo, situacionEmpleo, estadoCivil);
     }
 
-    void cargarLotes(String path) throws FileNotFoundException, ParseException {
+    private void cargarLotes(String path) throws FileNotFoundException, ParseException {
         Scanner scanner = getScanner(path);
         while (scanner.hasNextLine()){
             ArrayList<String> data = getData(scanner);
@@ -128,6 +128,26 @@ public class ManejadorArchivos {
             Lote lote = cargarLote(data);
             productos.get(codigo).añadirLote(lote);
         }
+    }
+
+    public void cargarLotesPorPrimeraVez(String path) throws FileNotFoundException, ParseException {
+        Scanner scanner = getScanner(path);
+        while (scanner.hasNextLine()){
+            ArrayList<String> data = getData(scanner);
+            int codigo = Integer.parseInt(data.get(0));
+            Lote lote = cargarLotePorPrimeraVez(data);
+            productos.get(codigo).añadirLote(lote);
+        }
+    }
+
+    private Lote cargarLotePorPrimeraVez(ArrayList<String> data) throws ParseException {
+        Date fechaLlegada = Calendar.getInstance().getTime();
+        Date fechaVencimiento = DateFormat.getDateInstance().parse(data.get(1));
+        float cantidadInicial = Float.parseFloat(data.get(2));
+        float cantidadActual = Float.parseFloat(data.get(2));
+        float precioUnidadAdquisicion = Float.parseFloat(data.get(3));
+        float precioVentaAlPublico = Float.parseFloat(data.get(4));
+        return new Lote(fechaLlegada, fechaVencimiento, cantidadInicial, cantidadActual, precioUnidadAdquisicion, precioVentaAlPublico);
     }
 
     private Lote cargarLote(ArrayList<String> data) throws ParseException {

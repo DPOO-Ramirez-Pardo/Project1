@@ -11,7 +11,7 @@ public abstract class Producto {
 	protected float cantidadVendida;
 	protected float cantidadDeshechada;
 	protected float dineroAdquirido;
-	protected LinkedList<Lote> lotes;
+	protected ArrayList<Lote> lotes;
 	protected ArrayList<Categoria> categorias;
 	protected String unidad;
 	protected float cantidadActual;
@@ -25,7 +25,7 @@ public abstract class Producto {
 		this.cantidadVendida = cantidadVendida;
 		this.cantidadDeshechada = cantidadDeshechada;
 		this.dineroAdquirido = dineroAdquirido;
-		this.lotes = new LinkedList<>();
+		this.lotes = new ArrayList<>();
 		this.categorias = new ArrayList<>();
 		this.unidad = unidad;
 		this.cantidadActual = 0;
@@ -56,7 +56,7 @@ public abstract class Producto {
 		return dineroAdquirido;
 	}
 
-	public LinkedList<Lote> getLotes() {
+	public ArrayList<Lote> getLotes() {
 		return lotes;
 	}
 
@@ -86,6 +86,7 @@ public abstract class Producto {
 
 	public void añadirLote(Lote lote) {
 		lotes.add(lote);
+		cantidadActual += lote.getCantidadActual();
 	}
 
 	public void añadirCategoria(Categoria categoria){
@@ -93,10 +94,16 @@ public abstract class Producto {
 	}
 
 	public void eliminarLotesVencidos(Date fecha){
-		for (Lote lote: lotes){
-			if(lote.getFechaVencimiento().before(fecha)) lotes.remove(lote);
+		for (int i = 0; i < lotes.size(); ++i){
+			Lote lote = lotes.get(i);
+			if(lote.getFechaVencimiento().before(fecha)){
+				eliminarLoteVencido(lote);
+				--i;
+			}
 		}
 	}
+
+	protected abstract void eliminarLoteVencido(Lote lote);
 
 	public String lineaArchivo(){
 		return nombre +","+descripcion+","+Integer.toString(codigo)+","+condicion.toString()+","
@@ -105,11 +112,11 @@ public abstract class Producto {
 	}
 
 	public float getCostoPorUnidadAdquisicion(){
-		return lotes.getFirst().getPrecioUnidadAdquisicion();
+		return lotes.get(0).getPrecioUnidadAdquisicion();
 	}
 
 	public float getPrecioPorUnidad(){
-		return lotes.getLast().getPrecioVentaAlPublico();
+		return lotes.get(lotes.size()-1).getPrecioVentaAlPublico();
 	}
 
 	public abstract String stringInformacion();
@@ -126,6 +133,7 @@ public abstract class Producto {
 				if (cantidad == 0) return;
 			} else {
 				lote.reducirCantidadActual(cantidad);
+				return;
 			}
 		}
 	}

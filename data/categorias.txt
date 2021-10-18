@@ -1,2 +1,5 @@
-Tartrazina
+Bebidas,Tartrazina
+Bebidas,9092834
+Bebidas,7034549
 Tartrazina,2456613
+Tartrazina,2987468

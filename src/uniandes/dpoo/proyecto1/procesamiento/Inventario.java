@@ -25,7 +25,7 @@ public class Inventario extends ProcesamientoSupermercado{
     }
 
     public void recibirCarga(String path) throws FileNotFoundException, ParseException {
-        manejadorArchivos.cargarLotes(path);
+        manejadorArchivos.cargarLotesPorPrimeraVez(path);
     }
 
     public void agregarCategoria(String nombre) throws Exception {

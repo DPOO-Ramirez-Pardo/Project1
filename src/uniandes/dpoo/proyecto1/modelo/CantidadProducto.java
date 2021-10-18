@@ -3,6 +3,8 @@ package uniandes.dpoo.proyecto1.modelo;
 public class CantidadProducto {
 	private float cantidad;
 	private Producto producto;
+	private float costo = 0;
+
 	public CantidadProducto (float cantidad, Producto producto) throws Exception {
 		this.producto = producto;
 		if(producto instanceof ProductoEmpaquetado && cantidad != Math.ceil(cantidad))
@@ -20,7 +22,8 @@ public class CantidadProducto {
 	}
 
 	public float getCosto() throws Exception {
-		return producto.costoProductos(cantidad);
+		if(costo != 0) return costo;
+		else return producto.costoProductos(cantidad);
 	}
 
     public void aumentarCantidad(float cantidad) throws Exception {
@@ -31,6 +34,7 @@ public class CantidadProducto {
     }
 
 	public void reducirCantidadEnLotes() throws Exception {
+		costo = producto.costoProductos(cantidad);
 		producto.reducirCantidad(cantidad);
 	}
 }

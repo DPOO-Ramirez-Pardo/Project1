@@ -18,7 +18,7 @@ public class InventarioConsola {
         boolean activo = false;
         switch (opcion) {
             case 1:
-                mostrarInformacionProducto();
+                informacionInventarioProducto();
                 activo = true;
                 break;
             case 2:
@@ -44,13 +44,12 @@ public class InventarioConsola {
             case 7:
                 desempenoFinancieroProducto();
                 activo = true;
+                break;
             case 8:
-                informacionInventarioProducto();
-                activo = true;
-            case 9:
                 eliminarLotesVencidos();
                 activo = true;
-            case 10:
+                break;
+            case 9:
                 try{inventario.cerrarProcesamiento();} catch (IOException e) {e.printStackTrace();}
                 activo = false;
                 break;
@@ -58,6 +57,7 @@ public class InventarioConsola {
                 System.out.println(MessageFormat.format("La opción {0} no existe. Escoja una opción del menú.", Integer.toString(opcion)));
                 activo = true;
         }
+        if (activo) presionarTeclaParaContinuar();
         return activo;
     }
 
@@ -90,8 +90,9 @@ public class InventarioConsola {
         String nombre = scanner.nextLine();
         try {
             inventario.eliminarLotesVencidosPorNombre(nombre);
+            System.out.println("Los lotes vencidos han sido eliminados.");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -118,7 +119,7 @@ public class InventarioConsola {
         try {
             System.out.println(inventario.informacionInventarioProductoPorNombre(nombre));
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -160,7 +161,7 @@ public class InventarioConsola {
         try {
             System.out.println(inventario.desempenoFinancieroProductoPorNombre(nombre));
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -172,9 +173,9 @@ public class InventarioConsola {
             inventario.recibirCarga(path);
             System.out.println("Lotes cargados.");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         } catch (ParseException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -206,17 +207,19 @@ public class InventarioConsola {
         try {
             System.out.println(inventario.condicionAlmacenamientoPorNombre(nombre));
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
     private static void agregarCategoria() {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Introduzca el nombre de la nueva categoría:");
         String nombre = scanner.nextLine();
         try {
             inventario.agregarCategoria(nombre);
+            System.out.println("Categoría añadida exitosamente.");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -241,7 +244,7 @@ public class InventarioConsola {
             inventario.categorizarProductoPorCodigo(nombreCategoría,codigoProducto);
             System.out.println("Producto categorizado correctamente.");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -254,7 +257,7 @@ public class InventarioConsola {
             inventario.categorizarProductoPorNombre(nombreCategoría,nombreProducto);
             System.out.println("Producto categorizado correctamente.");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -278,9 +281,8 @@ public class InventarioConsola {
                 5. Mostrar condición de almacenamiento del producto
                 6. Recibir una carga
                 7. Mostrar el desempeño financiero de un producto
-                8. Mostrar información del producto en el inventario
-                9. Eliminar lotes vencidos
-                10. Salir de la aplicación
+                8. Eliminar lotes vencidos
+                9. Salir de la aplicación
                 """);
     }
 
@@ -308,7 +310,7 @@ public class InventarioConsola {
                 edad = Integer.parseInt(scanner.nextLine());
                 break;
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                System.out.println("Entrada inválida; debe introducir un entero.");
             }
         }
         return edad;
@@ -321,9 +323,15 @@ public class InventarioConsola {
                 edad = Float.parseFloat(scanner.nextLine());
                 break;
             } catch (NumberFormatException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
         return  edad;
+    }
+
+    private static void presionarTeclaParaContinuar(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\n\nPresione alguna tecla para continuar\n");
+        scanner.nextLine();
     }
 }
