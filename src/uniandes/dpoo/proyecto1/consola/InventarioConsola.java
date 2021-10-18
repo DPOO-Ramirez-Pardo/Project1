@@ -7,6 +7,8 @@ import uniandes.dpoo.proyecto1.procesamiento.Inventario;
 import java.text.MessageFormat;
 import java.util.Scanner;
 
+import java.text.ParseException;
+import java.util.Scanner;
 public class InventarioConsola {
 
     static Inventario inventario;
@@ -51,7 +53,7 @@ public class InventarioConsola {
         	eliminarLotesVencidos();
         	activo = true;
         case 10:
-            inventario.cerrarProcesamiento();
+            cerrarProcesamiento();
         	activo = false;
         break;
             default:
@@ -62,7 +64,7 @@ public class InventarioConsola {
     }
     
     private static void eliminarLotesVencidos(){
-    	System.out.println("ILotes vencidos eliminados: \n");
+    	System.out.println("Lotes vencidos eliminados: \n");
     	inventario.eliminarLotesVencidos();
     }
 
@@ -72,10 +74,16 @@ public class InventarioConsola {
 
     }
 
-    private static void desempenoFinancieroProducto(){
+    private static void desempenoFinancieroProducto(Scanner scanner){
     	System.out.println("Mostrando desempeño financiero del producto: \n");
-    	inventario.desempenoFinancieroProducto();
-
+    	System.out.println("Inserte el producto");
+    	System.out.println("Inserte 1 si desea insertar el nombre del producto, inserte 2 si desea insertar el código del producto");
+    	int opcion = scanner.nextInt();
+    	switch (opcion) {
+    	case 1:
+    		String nombreProducto = 
+    	}
+    	
     }
 
     private static void recibirCarga(){
@@ -103,6 +111,7 @@ public class InventarioConsola {
     	String productoAgregado = myObj.nextLine();
     	inventario.agregarProducto();
     	System.out.println("Se agrego al pedido el elemento: "+ productoAgregado);
+    	
 
     }
 
