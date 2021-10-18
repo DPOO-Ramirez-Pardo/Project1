@@ -137,5 +137,13 @@ public abstract class Producto {
 			}
 		}
 	}
+
+    public String stringInformacionLotes() {
+		StringBuilder builder = new StringBuilder();
+		for(Lote lote: lotes){
+			builder.append(lote.stringInformacion(unidad)).append('\n');
+		}
+		return builder.toString();
+    }
 }
 

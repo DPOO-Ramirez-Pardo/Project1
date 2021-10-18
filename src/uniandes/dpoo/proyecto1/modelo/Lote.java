@@ -1,5 +1,6 @@
 package uniandes.dpoo.proyecto1.modelo;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.ArrayList;
 
@@ -58,5 +59,19 @@ public Lote(Date fechaLlegada, Date fechaVencimiento, float cantidadInicial, flo
 
 	public void setPrecioVentaAlPublico(float precioVentaAlPublico) {
 		this.precioVentaAlPublico = precioVentaAlPublico;
+	}
+
+    public String stringInformacion(String unidad) {
+    	return MessageFormat.format("""
+				Información Lote:
+				Fecha Llegada: {0}
+				Fecha Vencimiento: {1}
+				Cantidad Inicial: {2}
+				Cantidad Actual: {3}
+				Precio de Adquisición por {4}: {5}
+				Precio de Venta por {4}: {6}
+				""", DateFormat.getDateInstance().format(fechaLlegada),
+				DateFormat.getDateInstance().format(fechaVencimiento), cantidadInicial, cantidadActual, unidad,
+				precioUnidadAdquisicion, precioVentaAlPublico);
 	}
 }

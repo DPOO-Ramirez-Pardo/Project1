@@ -50,6 +50,10 @@ public class InventarioConsola {
                 activo = true;
                 break;
             case 9:
+                mostrarInformacionLotesProducto();
+                activo = true;
+                break;
+            case 10:
                 try{inventario.cerrarProcesamiento();} catch (IOException e) {e.printStackTrace();}
                 activo = false;
                 break;
@@ -282,7 +286,8 @@ public class InventarioConsola {
                 6. Recibir una carga
                 7. Mostrar el desempeño financiero de un producto
                 8. Eliminar lotes vencidos
-                9. Salir de la aplicación
+                9. Mostrar Información de Lotes de un Producto
+                10. Salir de la aplicación
                 """);
     }
 
@@ -327,6 +332,38 @@ public class InventarioConsola {
             }
         }
         return  edad;
+    }
+
+    private static void mostrarInformacionLotesProducto(){
+        Scanner scanner = new Scanner(System.in);
+        int opcion = leerOpcion(scanner);
+        if (opcion == 1) {
+            mostrarInformacionLotesProductoPorNombre(scanner);
+        } else if (opcion == 2) {
+            mostrarInformacionLotesProductoPorCodigo(scanner);
+        } else {
+            System.out.println("Opción inválida");
+        }
+    }
+
+    private static void mostrarInformacionLotesProductoPorCodigo(Scanner scanner) {
+        System.out.println("Seleccione el producto que desea categorizar:\n");
+        int codigo = leerEntero(scanner);
+        try {
+            System.out.println(inventario.mostrarInformacionProductoPorCodigo(codigo));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void mostrarInformacionLotesProductoPorNombre(Scanner scanner) {
+        System.out.println("Seleccione el producto que desea categorizar:\n");
+        String nombreProducto = scanner.nextLine();
+        try {
+            System.out.println(inventario.mostrarInformacionProductoPorNombre(nombreProducto));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private static void presionarTeclaParaContinuar(){

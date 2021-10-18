@@ -100,4 +100,15 @@ public class Inventario extends ProcesamientoSupermercado{
         Producto producto = getProductoPorNombre(nombre);
         return producto.getCondicion().toString();
     }
+
+    public String mostrarInformacionProductoPorNombre(String nombreProducto) throws Exception {
+        Producto producto = getProductoPorNombre(nombreProducto);
+        return producto.stringInformacionLotes();
+    }
+
+    public String mostrarInformacionProductoPorCodigo(int codigo) throws Exception {
+        Producto producto = getProductoPorCodigo(codigo);
+        if (producto == null) throw new Exception("No hay producto asociado al código.");
+        else return producto.stringInformacionLotes();
+    }
 }
