@@ -40,7 +40,8 @@ public Lote(Date fechaLlegada, Date fechaVencimiento, float cantidadInicial, flo
 	public String lineaArchivo(){
 		return DateFormat.getDateInstance().format(fechaLlegada) +","
 				+DateFormat.getDateInstance().format(fechaVencimiento)+","
-				+Float.toString(cantidadInicial)+","+Float.toString(cantidadActual);
+				+Float.toString(cantidadInicial)+","+Float.toString(cantidadActual)+","
+				+Float.toString(precioUnidadAdquisicion)+","+Float.toString(precioVentaAlPublico)+",";
 	}
 
     public void reducirCantidadActual(float cantidad) {

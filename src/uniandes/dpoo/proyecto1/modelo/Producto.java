@@ -100,7 +100,8 @@ public abstract class Producto {
 
 	public String lineaArchivo(){
 		return nombre +","+descripcion+","+Integer.toString(codigo)+","+condicion.toString()+","
-				+Float.toString(cantidadVendida)+","+Float.toString(dineroAdquirido)+","+unidad;
+				+Float.toString(cantidadVendida)+","+Float.toString(cantidadDeshechada)+","
+				+Float.toString(dineroAdquirido)+","+unidad;
 	}
 
 	public float getCostoPorUnidadAdquisicion(){

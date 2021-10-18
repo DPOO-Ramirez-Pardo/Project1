@@ -32,6 +32,7 @@ public class POSConsola {
 				activo = true;
 				break;
 			case 5:
+				añadirTitular();
 				activo = true;
 				break;
 			case 6:
@@ -42,93 +43,223 @@ public class POSConsola {
 				activo = true;
 				break;
 			case 8:
-				pos.cerrarProcesamiento();
+				try{pos.cerrarProcesamiento();} catch (IOException e) {e.printStackTrace();}
 				activo = false;
 			default:
 				System.out.println(MessageFormat.format("La opción {0} no existe. Escoja una opción del menú.", Integer.toString(opcion)));
 				activo = true;
 		}
-		return true;
+		return activo;
 	}
 
-	private static void generarRecibo() {
-		Scanner myObj = new Scanner(System.in);
-		System.out.println("¿Desea generar un recibo?:\n");
-		String opcion = myObj.nextLine();
-		switch (opcion) {
-			case "si":
-				pos.generarRecibo();
-				System.out.println("Recibo impreso, compra exitosa");
-			case "no":
-				System.out.println("Recibo no impreso, compra exitosa");
-			default:
-				System.out.println("Por favor, inserte si o no");
+	private static void eliminarProducto() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Introduzca 1. para introducir el producto por nombre y 2. para introducir el producto por código.");
+		int opcion = leerEntero(scanner);
+		if(opcion == 1){
+			eliminarProductoPorNombre(scanner);
+		} else if (opcion == 2){
+			eliminarProductoPorCodigo(scanner);
+		} else {
+			System.out.println("Opción inválida"); return;
 		}
 	}
 
-	private static void registrarClienteEnSistemaPuntos() {
-		Scanner myObj = new Scanner(System.in);
-		System.out.println("Ingrese la cédula del Cliente: ");
-		String opcion = myObj.nextLine();
+	private static void añadirTitular() {
+		System.out.println("Introduzca la cédula del cliente:");
+		int cedula = leerEntero(new Scanner(System.in));
+		if (pos.existeCliente(cedula)){
+			pos.añadirTitular(cedula);
+			System.out.println("Cliente añadido exitosamente al recibo");
+		} else {
+			System.out.println("No existe cliente con esa cédula.");
+		}
+	}
 
+	private static void generarRecibo() {
+		try {
+			System.out.println(pos.cerrarRecibo());
+			System.out.println("Recibo impreso, compra exitosa");
+		} catch (Exception e) {e.printStackTrace();}
+	}
+
+	private static void registrarClienteEnSistemaPuntos() {
+		Scanner scanner = new Scanner(System.in);
+		int cedula = leerCedula(scanner);
+		if (cedula == 0) return;
+		System.out.println("Introduzca el nombre del Cliente:");
+		String nombre = scanner.nextLine();
+		System.out.println("Introduzca la edad del Cliente:");
+		int edad = leerEntero(scanner);
+		float puntos = 0;
+		Sexo sexo = leerSexo(scanner);
+		SituacionEmpleo situacionEmpleo = leerSituacionEmpleo(scanner);
+		EstadoCivil estadoCivil = leerEstadoCivil(scanner);
+		try {
+			pos.registrarClienteEnSistemaPuntos(nombre, cedula, edad, puntos, sexo, situacionEmpleo, estadoCivil);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static int leerEntero(Scanner scanner) {
+		int edad = 0;
+		while (true) {
+			try {
+				edad = Integer.parseInt(scanner.nextLine());
+				break;
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
+		return edad;
+	}
+
+	private static float leerFlotante(Scanner scanner) {
+		float edad = 0;
+		while (true) {
+			try {
+				edad = Float.parseFloat(scanner.nextLine());
+				break;
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
+		return edad;
+	}
+
+	private static int leerCedula(Scanner scanner) {
+		System.out.println("La cédula del Cliente:");
+		int cedula = 0;
+		cedula = leerEntero(scanner);
+		if (pos.existeCliente(cedula)){
+			System.out.println("El cliente ya existe.");
+			cedula = 0;
+		}
+		return cedula;
+	}
+
+	private static Sexo leerSexo(Scanner scanner) {
+		System.out.println("Introduzca su Sexo");
+		Sexo sexo = Sexo.Masculino;
+		while(true){
+			try{
+				sexo = Sexo.valueOf(scanner.nextLine());
+				break;
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			}
+		}
+		return sexo;
+	}
+
+	private static SituacionEmpleo leerSituacionEmpleo(Scanner scanner) {
+		System.out.println("Introduzca su Situación de Empleo");
+		SituacionEmpleo situacionEmpleo = SituacionEmpleo.Desempleado;
+		while(true){
+			try{
+				situacionEmpleo = SituacionEmpleo.valueOf(scanner.nextLine());
+				break;
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			}
+		}
+		return situacionEmpleo;
+	}
+
+	private static EstadoCivil leerEstadoCivil(Scanner scanner) {
+		System.out.println("Introduzca el Estado Civil");
+		EstadoCivil estadoCivil = EstadoCivil.Soltero;
+		while(true){
+			try{
+				estadoCivil = EstadoCivil.valueOf(scanner.nextLine());
+				break;
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			}
+		}
+		return estadoCivil;
 	}
 
 	private static void agregarCantidadProducto() {
 		Scanner scanner = new Scanner(System.in);
-		if (!agregarProducto(scanner)) return;
+		System.out.println("Introduzca 1. para introducir el producto por nombre y 2. para introducir el producto por código.");
+		int opcion = leerEntero(scanner);
+		if(opcion == 1){
+			if (!agregarProductoPorNombre(scanner)) return;
+		} else if (opcion == 2){
+			if (!agregarProductoPorCodigo(scanner)) return;
+		} else {
+			System.out.println("Opción inválida"); return;
+		}
 		if (!agregarCantidad(scanner)) return;
 		System.out.println("El producto fue añadido exitosamente.");
 	}
 
 	private static boolean agregarCantidad(Scanner scanner) {
-		boolean continuarCiclo = true;
-		while (continuarCiclo){
-			continuarCiclo = false;
-			try{
-				if (pos.actualProductoEsEmpaquetado()){
-					System.out.println("Seleccione la cantidad de paquetes que desea agregar a su pedido:\n");
-					int cantidad = Integer.parseInt(scanner.nextLine());
-					pos.agregarCantidadProducto(cantidad);
-				} else {
-					System.out.println(
-							MessageFormat.format("Seleccione la cantidad de {} que desea agregar a su pedido:\n",
-									pos.unidadActualProducto()));
-					float cantidad = Float.parseFloat(scanner.nextLine());
-					pos.agregarCantidadProducto(cantidad);
-				}
-			} catch (Exception e){
-				System.out.println(e.getMessage());
-				if (e instanceof ParseException) continuarCiclo = true;
-				if (e.getMessage().equals("No hay pedido en curso.")) return false;
-				if (e.getMessage().equals("No hay producto para agregar cantidad.")) return false;
-			}
+	try{
+		if (pos.actualProductoEsEmpaquetado()){
+			System.out.println("Seleccione la cantidad de paquetes que desea agregar a su pedido:\n");
+			int cantidad = leerEntero(scanner);
+			pos.agregarCantidadProducto(cantidad);
+		} else {
+			System.out.println(
+					MessageFormat.format("Seleccione la cantidad de {} que desea agregar a su pedido:\n",
+							pos.unidadActualProducto()));
+			float cantidad = Float.parseFloat(scanner.nextLine());
+			pos.agregarCantidadProducto(cantidad);
 		}
+	} catch (Exception e){
+		System.out.println(e.getMessage());
+		pos.cancelarProducto();
+	}
 		return true;
 	}
 
-	private static boolean agregarProducto(Scanner scanner) {
-		boolean continuarCiclo = true;
-		while(continuarCiclo){
-			continuarCiclo = false;
-			System.out.println("Seleccione el producto que desea agregar a su pedido:\n");
-			String productoAgregado = scanner.nextLine();
-			try{
-				pos.agregarProductoPorNombre(productoAgregado);
-			} catch (Exception e){
-				System.out.println(e.getMessage());
-				if (e.getMessage().equals("No hay pedido en curso.")) return false;
-				else if (!e.getMessage().equals("Ya hay un producto siendo agregado.")) continuarCiclo = true;
-			}
+	private static boolean agregarProductoPorNombre(Scanner scanner) {
+		System.out.println("Seleccione el producto que desea agregar a su pedido:\n");
+		String productoAgregado = scanner.nextLine();
+		try{
+			pos.agregarProductoPorNombre(productoAgregado);
+			return true;
+		} catch (Exception e){
+			System.out.println(e.getMessage());
+			return false;
 		}
-		return true;
 	}
 
-	private static void eliminarProducto() {
-		Scanner myObj = new Scanner(System.in);
-		System.out.println("Seleccione el producto que desea eliminar a su pedido:\n");
-		String productoEliminado = myObj.nextLine();
-		pos.eliminarProducto();
-		System.out.println("Se eliminó al pedido el elemento: " + productoEliminado);
+	private static boolean agregarProductoPorCodigo(Scanner scanner) {
+		System.out.println("Seleccione el producto que desea agregar a su pedido:\n");
+		int codigo = leerEntero(scanner);
+		try{
+			pos.agregarProductoPorCodigo(codigo);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	private static void eliminarProductoPorNombre(Scanner scanner) {
+		System.out.println("Seleccione el producto que desea eliminar de su pedido:\n");
+		String elim = scanner.nextLine();
+		try{
+			pos.eliminarProductoPorNombre(elim);
+			System.out.println("El producto ha sido eliminado.");
+		} catch (Exception e){
+			System.out.println(e.getMessage());
+		}
+	}
+
+	private static void eliminarProductoPorCodigo(Scanner scanner) {
+		System.out.println("Seleccione el producto que desea eliminar de su pedido:\n");
+		int codigo = leerEntero(scanner);
+		try{
+			pos.eliminarProductoPorCodigo(codigo);
+			System.out.println("El producto ha sido eliminado.");
+		} catch (Exception e){
+			System.out.println(e.getMessage());
+		}
 	}
 
 	private static void iniciarPedido() {

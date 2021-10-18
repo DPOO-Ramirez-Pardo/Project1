@@ -104,4 +104,12 @@ public class POS extends ProcesamientoSupermercado{
         checkProducto();
         return actualProducto instanceof ProductoEmpaquetado;
     }
+
+    public void cancelarProducto() {
+        actualProducto = null;
+    }
+
+    public void añadirTitular(int cedula) {
+        actualRecibo.añadirTitular(clientesPorCedula.get(cedula));
+    }
 }

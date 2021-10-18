@@ -120,7 +120,7 @@ public class ManejadorArchivos {
         return new Cliente(nombre, cedula, edad, puntos, sexo, situacionEmpleo, estadoCivil);
     }
 
-    private void cargarLotes(String path) throws FileNotFoundException, ParseException {
+    void cargarLotes(String path) throws FileNotFoundException, ParseException {
         Scanner scanner = getScanner(path);
         while (scanner.hasNextLine()){
             ArrayList<String> data = getData(scanner);
@@ -135,7 +135,9 @@ public class ManejadorArchivos {
         Date fechaVencimiento = DateFormat.getDateInstance().parse(data.get(2));
         float cantidadInicial = Float.parseFloat(data.get(3));
         float cantidadActual = Float.parseFloat(data.get(4));
-        return new Lote(fechaLlegada, fechaVencimiento, cantidadInicial, cantidadActual);
+        float precioUnidadAdquisicion = Float.parseFloat(data.get(5));
+        float precioVentaAlPublico = Float.parseFloat(data.get(6));
+        return new Lote(fechaLlegada, fechaVencimiento, cantidadInicial, cantidadActual, precioUnidadAdquisicion, precioVentaAlPublico);
     }
 
     private void cargarRecibos(String path) throws FileNotFoundException, ParseException {

@@ -1,6 +1,7 @@
 package uniandes.dpoo.proyecto1.modelo;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ProductoEmpaquetado extends Producto{
 	private float peso;
@@ -15,7 +16,7 @@ public class ProductoEmpaquetado extends Producto{
 
 	@Override
 	public float costoProductos(float cantidad) throws Exception {
-		eliminarLotesVencidos();
+		eliminarLotesVencidos(Calendar.getInstance().getTime());
 		float precio = 0;
 		for (Lote lote: lotes){
 			if (cantidad <= lote.getCantidadActual()){

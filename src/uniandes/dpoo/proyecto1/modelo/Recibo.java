@@ -99,4 +99,8 @@ public class Recibo {
 		}
 		cliente.añadirPuntos((float) (subtotal * 1.19 / 1000));
 	}
+
+    public void añadirTitular(Cliente cliente) {
+		this.cliente = cliente;
+    }
 }
