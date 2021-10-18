@@ -33,11 +33,12 @@ public class Recibo {
 	}
 
 	public String lineaArchivo(){
-		StringBuilder builder = new StringBuilder().append(cliente.getCedula()).append(",")
+		StringBuilder builder = new StringBuilder().append(cliente != null ? cliente.getCedula(): 0).append(",")
 				.append(DateFormat.getDateInstance().format(fecha));
 		for (int i = 0; i < cantidadesProductos.size(); i++) {
-			builder.append(",").append(cantidadesProductos.get(i).getCantidad()).append(",")
-					.append(cantidadesProductos.get(i).getProducto().getCodigo());
+			try {builder.append(",").append(cantidadesProductos.get(i).getCantidad()).append(",")
+					.append(cantidadesProductos.get(i).getProducto().getCodigo()).append(",")
+					.append(cantidadesProductos.get(i).getCosto());} catch (Exception e) {}
 		}
 		return builder.toString();
 	}
@@ -69,6 +70,7 @@ public class Recibo {
 		}
 		if(!yaExiste){
 			CantidadProducto cantidadProducto = new CantidadProducto(cantidad, producto);
+			subtotal += cantidadProducto.getCosto();
 			cantidadesProductos.add(cantidadProducto);
 		}
 	}
@@ -79,25 +81,25 @@ public class Recibo {
 
 	public String generarRecibo() throws Exception {
 		StringBuilder builder = new StringBuilder();
-		builder.append("fecha: ").append(fecha);
-		if (cliente != null) builder.append("cliente: ").append(cliente.getNombre()).append("\n");
+		builder.append("fecha: ").append(fecha).append("\n");
+		if (cliente != null) builder.append("cliente: ").append(cliente.getNombre()).append("\n-----\n");
 		for (CantidadProducto cantidadProducto: cantidadesProductos) {
 			builder.append(cantidadProducto.getCantidad()).append(" ")
 					.append(cantidadProducto.getProducto().getNombre()).append(" ")
 					.append(cantidadProducto.getCosto()).append("\n");
 		}
-		builder.append("subtotal: ").append(subtotal).append("\n")
+		builder.append("-----\nsubtotal: ").append(subtotal).append("\n")
 				.append("IVA: ").append(subtotal*0.19).append("\n")
 				.append("total: ").append(subtotal*1.19).append("\n");
 		return builder.toString();
 	}
 
 	public void cerrar() {
-		cliente.añadirRecibo(this);
+		if (cliente != null) cliente.añadirRecibo(this);
 		for(CantidadProducto cantidadProducto: cantidadesProductos){
 			try {cantidadProducto.reducirCantidadEnLotes();} catch (Exception e) {}
 		}
-		cliente.añadirPuntos((float) (subtotal * 1.19 / 1000));
+		if (cliente != null) cliente.añadirPuntos((float) (subtotal * 1.19 / 1000));
 	}
 
     public void añadirTitular(Cliente cliente) {

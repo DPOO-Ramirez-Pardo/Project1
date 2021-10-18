@@ -3,6 +3,7 @@ package uniandes.dpoo.proyecto1.procesamiento;
 import uniandes.dpoo.proyecto1.modelo.Categoria;
 import uniandes.dpoo.proyecto1.modelo.Cliente;
 import uniandes.dpoo.proyecto1.modelo.Producto;
+import uniandes.dpoo.proyecto1.modelo.Recibo;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,6 +18,7 @@ public abstract class ProcesamientoSupermercado {
     protected TreeMap<String, Categoria> categorias;
     protected HashMap<Integer, Cliente> clientesPorCedula;
     protected ManejadorArchivos manejadorArchivos;
+    protected ArrayList<Recibo> recibosSinCedula;
 
     /**
      *
@@ -92,6 +94,7 @@ public abstract class ProcesamientoSupermercado {
             productosPorCodigo = manejadorArchivos.getProductos();
             clientesPorCedula = manejadorArchivos.getClientes();
             categorias = manejadorArchivos.getCategorias();
+            recibosSinCedula = manejadorArchivos.getRecibosSinCedula();
             productosPorNombre = new TreeMap<>();
             for(Producto producto: productosPorCodigo.values()){
                 productosPorNombre.put(producto.getNombre(), producto);

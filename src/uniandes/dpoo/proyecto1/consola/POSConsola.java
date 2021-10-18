@@ -36,6 +36,8 @@ public class POSConsola {
 				activo = true;
 				break;
 			case 6:
+				pos.cancelarRecibo();
+				System.out.println("Recibo cancelado!");
 				activo = true;
 				break;
 			case 7:
@@ -45,10 +47,13 @@ public class POSConsola {
 			case 8:
 				try{pos.cerrarProcesamiento();} catch (IOException e) {e.printStackTrace();}
 				activo = false;
+				break;
 			default:
 				System.out.println(MessageFormat.format("La opción {0} no existe. Escoja una opción del menú.", Integer.toString(opcion)));
 				activo = true;
 		}
+		try{System.out.println(pos.generarRecibo());} catch (Exception e) {}
+		if (activo) presionarTeclaParaContinuar();
 		return activo;
 	}
 
@@ -98,7 +103,7 @@ public class POSConsola {
 		try {
 			pos.registrarClienteEnSistemaPuntos(nombre, cedula, edad, puntos, sexo, situacionEmpleo, estadoCivil);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -109,7 +114,7 @@ public class POSConsola {
 				edad = Integer.parseInt(scanner.nextLine());
 				break;
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
+				System.out.println("Entrada inválida; debe introducir un entero.");
 			}
 		}
 		return edad;
@@ -122,7 +127,7 @@ public class POSConsola {
 				edad = Float.parseFloat(scanner.nextLine());
 				break;
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 		}
 		return edad;
@@ -147,7 +152,7 @@ public class POSConsola {
 				sexo = Sexo.valueOf(scanner.nextLine());
 				break;
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 		}
 		return sexo;
@@ -161,7 +166,7 @@ public class POSConsola {
 				situacionEmpleo = SituacionEmpleo.valueOf(scanner.nextLine());
 				break;
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 		}
 		return situacionEmpleo;
@@ -175,7 +180,7 @@ public class POSConsola {
 				estadoCivil = EstadoCivil.valueOf(scanner.nextLine());
 				break;
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 		}
 		return estadoCivil;
@@ -300,6 +305,12 @@ public class POSConsola {
 				System.out.println("Entrada inválida; debe introducir un entero.");
 			}
 		}
+	}
+
+	private static void presionarTeclaParaContinuar(){
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("\n\nPresione alguna tecla para continuar\n");
+		scanner.nextLine();
 	}
 }
 

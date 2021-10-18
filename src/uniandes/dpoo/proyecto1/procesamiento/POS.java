@@ -26,6 +26,7 @@ public class POS extends ProcesamientoSupermercado{
     public String cerrarRecibo() throws Exception {
         checkPedido();
         String mensaje = actualRecibo.generarRecibo();
+        if(actualRecibo.getCliente() == null) recibosSinCedula.add(actualRecibo);
         actualRecibo.cerrar();
         actualRecibo = null;
         return mensaje;
@@ -111,5 +112,9 @@ public class POS extends ProcesamientoSupermercado{
 
     public void añadirTitular(int cedula) {
         actualRecibo.añadirTitular(clientesPorCedula.get(cedula));
+    }
+
+    public void cancelarRecibo() {
+        actualRecibo = null;
     }
 }

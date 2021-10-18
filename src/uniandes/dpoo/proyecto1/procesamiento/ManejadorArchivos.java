@@ -14,6 +14,12 @@ public class ManejadorArchivos {
     private HashMap<Integer, Producto> productos;
     private TreeMap<String, Categoria> categorias;
     private HashMap<Integer, Cliente> clientes;
+
+    public ArrayList<Recibo> getRecibosSinCedula() {
+        return recibosSinCedula;
+    }
+
+    private ArrayList<Recibo> recibosSinCedula;
     private String pathClientes;
     private String pathCategorias;
     private String pathProductos;
@@ -42,6 +48,7 @@ public class ManejadorArchivos {
         this.pathProductos = pathProductos;
         this.pathLotes = pathLotes;
         this.pathRecibos = pathRecibos;
+        recibosSinCedula = new ArrayList<>();
         cargarClientes(pathClientes);
         cargarProductos(pathProductos);
         cargarCategorias(pathCategorias);
@@ -79,7 +86,6 @@ public class ManejadorArchivos {
     private void cargarCategorias(String path) throws FileNotFoundException {
         Scanner scanner = getScanner(path);
         crearCategorias(scanner);
-        String line;
         while (scanner.hasNextLine()) {
             ArrayList<String> data = getData(scanner);
             categorizarProducto(data);
@@ -165,7 +171,8 @@ public class ManejadorArchivos {
         while (scanner.hasNextLine()){
             ArrayList<String> data = getData(scanner);
             Recibo recibo = cargarRecibo(data);
-            clientes.get(recibo.getCliente().getCedula()).añadirRecibo(recibo);
+            if (recibo.getCliente() == null) recibosSinCedula.add(recibo);
+            else clientes.get(recibo.getCliente().getCedula()).añadirRecibo(recibo);
         }
     }
 
@@ -173,12 +180,14 @@ public class ManejadorArchivos {
         int cedula = Integer.parseInt(data.get(0));
         Date fecha = DateFormat.getDateInstance().parse(data.get(1));
         ArrayList<CantidadProducto> cantidadesProductos = new ArrayList<>();
-        for (int i = 2; i < data.size(); i+=2) {
+        for (int i = 2; i < data.size(); i+=3) {
             float cantidad = Float.parseFloat(data.get(i));
             Producto producto = productos.get(Integer.parseInt(data.get(i+1)));
-            try {cantidadesProductos.add(new CantidadProducto(cantidad, producto));} catch (Exception e) {}
+            float costo = Float.parseFloat(data.get(i+2));
+            try {cantidadesProductos.add(new CantidadProducto(cantidad, producto, costo));} catch (Exception e) {}
         }
-        return new Recibo(fecha, clientes.get(cedula), cantidadesProductos);
+        if (cedula == 0) return new Recibo(fecha, null, cantidadesProductos);
+        else return new Recibo(fecha, clientes.get(cedula), cantidadesProductos);
     }
 
     private ArrayList<String> getData(Scanner scanner) {
@@ -207,9 +216,17 @@ public class ManejadorArchivos {
                 recibosBuilder.append(recibo.lineaArchivo()).append('\n');
             }
         }
+        guardarRecibosSinCedula(recibosBuilder);
         writeFile(clientesBuilder, pathClientes);
         writeFile(recibosBuilder, pathRecibos);
     }
+
+    private void guardarRecibosSinCedula(StringBuilder builder){
+        for (Recibo recibo: recibosSinCedula){
+            builder.append(recibo.lineaArchivo()).append('\n');
+        }
+    }
+
 
     private void writeFile(StringBuilder builder, String path) throws IOException {
         FileWriter writer = new FileWriter(path);
