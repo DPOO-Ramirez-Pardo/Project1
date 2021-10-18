@@ -9,12 +9,16 @@ private final Date fechaLlegada;
 private final Date fechaVencimiento;
 private float cantidadInicial;
 private float cantidadActual;
+private float precioUnidadAdquisicion;
+private  float precioVentaAlPublico;
 
-public Lote(Date fechaLlegada, Date fechaVencimiento, float cantidadInicial, float cantidadActual) {
+public Lote(Date fechaLlegada, Date fechaVencimiento, float cantidadInicial, float cantidadActual, float precioUnidadAdquisicion, float precioVentaAlPublico) {
 	this.fechaLlegada = fechaLlegada;
 	this.fechaVencimiento = fechaVencimiento;
 	this.cantidadInicial = cantidadInicial;
 	this.cantidadActual = cantidadActual;
+	this.precioUnidadAdquisicion = precioUnidadAdquisicion;
+	this.precioVentaAlPublico = precioVentaAlPublico;
 }
 
 	public Date getFechaLlegada() {
@@ -39,4 +43,19 @@ public Lote(Date fechaLlegada, Date fechaVencimiento, float cantidadInicial, flo
 				+Float.toString(cantidadInicial)+","+Float.toString(cantidadActual);
 	}
 
+    public void reducirCantidadActual(float cantidad) {
+		cantidadActual -= cantidad;
+    }
+
+	public float getPrecioUnidadAdquisicion() {
+		return precioUnidadAdquisicion;
+	}
+
+	public float getPrecioVentaAlPublico() {
+		return precioVentaAlPublico;
+	}
+
+	public void setPrecioVentaAlPublico(float precioVentaAlPublico) {
+		this.precioVentaAlPublico = precioVentaAlPublico;
+	}
 }

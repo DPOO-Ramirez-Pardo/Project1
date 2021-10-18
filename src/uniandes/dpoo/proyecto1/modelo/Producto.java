@@ -9,22 +9,26 @@ public abstract class Producto {
 	protected int codigo;
 	protected CondicionAlmacenamiento condicion;
 	protected float cantidadVendida;
+	protected float cantidadDeshechada;
 	protected float dineroAdquirido;
 	protected LinkedList<Lote> lotes;
 	protected ArrayList<Categoria> categorias;
 	protected String unidad;
+	protected float cantidadActual;
 
 	public Producto(String nombre, String descripcion, int codigo, CondicionAlmacenamiento condicion,
-					float cantidadVendida, float dineroAdquirido, String unidad) {
+					float cantidadVendida, float cantidadDeshechada, float dineroAdquirido, String unidad) {
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 		this.codigo = codigo;
 		this.condicion = condicion;
 		this.cantidadVendida = cantidadVendida;
+		this.cantidadDeshechada = cantidadDeshechada;
 		this.dineroAdquirido = dineroAdquirido;
 		this.lotes = new LinkedList<>();
 		this.categorias = new ArrayList<>();
 		this.unidad = unidad;
+		this.cantidadActual = 0;
 	}
 
 
@@ -64,8 +68,9 @@ public abstract class Producto {
 		return unidad;
 	}
 
+	public abstract float costoProductos(float cantidad) throws Exception;
 
-	public abstract float costoProductos(float cantidad);
+	public abstract float precioProductos(float cantidad) throws Exception;
 
 	public String mostrarCategorias() {
 		StringBuilder builder = new StringBuilder(categorias.get(0).getNombre());
@@ -88,8 +93,8 @@ public abstract class Producto {
 	}
 
 	public void eliminarLotesVencidos(Date fecha){
-		while (lotes.getFirst().getFechaVencimiento().before(fecha)){
-			lotes.removeFirst();
+		for (Lote lote: lotes){
+			if(lote.getFechaVencimiento().before(fecha)) lotes.remove(lote);
 		}
 	}
 
@@ -98,6 +103,30 @@ public abstract class Producto {
 				+Float.toString(cantidadVendida)+","+Float.toString(dineroAdquirido)+","+unidad;
 	}
 
+	public float getCostoPorUnidadAdquisicion(){
+		return lotes.getFirst().getPrecioUnidadAdquisicion();
+	}
+
+	public float getPrecioPorUnidad(){
+		return lotes.getLast().getPrecioVentaAlPublico();
+	}
+
 	public abstract String stringInformacion();
+
+	public abstract String stringDesempeñoFinanciero();
+
+	public void reducirCantidad(float cantidad) throws Exception {
+		dineroAdquirido += precioProductos(cantidad) - costoProductos(cantidad);
+		cantidadVendida += cantidad;
+		for(Lote lote: lotes){
+			if (lote.getCantidadActual() <= cantidad){
+				cantidad -= lote.getCantidadActual();
+				lotes.remove(lote);
+				if (cantidad == 0) return;
+			} else {
+				lote.reducirCantidadActual(cantidad);
+			}
+		}
+	}
 }
 

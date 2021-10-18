@@ -63,15 +63,16 @@ public class ManejadorArchivos {
         int codigo = Integer.parseInt(data.get(2));
         CondicionAlmacenamiento condicionAlmacenamiento = CondicionAlmacenamiento.valueOf(data.get(3));
         float cantidadVendida = Float.parseFloat(data.get(4));
-        float dineroAdquirido = Float.parseFloat(data.get(5));
-        String unidad = data.get(6);
-        if (data.size() > 7){
-            float peso = Float.parseFloat(data.get(7));
+        float cantidadDeshechada = Float.parseFloat(data.get(5));
+        float dineroAdquirido = Float.parseFloat(data.get(6));
+        String unidad = data.get(7);
+        if (data.size() > 8){
+            float peso = Float.parseFloat(data.get(8));
             productos.put(codigo, new ProductoEmpaquetado(nombre, descripcion, codigo, condicionAlmacenamiento,
-                    cantidadVendida, dineroAdquirido, unidad, peso));
+                    cantidadVendida, cantidadDeshechada, dineroAdquirido, unidad, peso));
         } else {
             productos.put(codigo, new ProductoPorPeso(nombre, descripcion, codigo, condicionAlmacenamiento,
-                    cantidadVendida, dineroAdquirido, unidad));
+                    cantidadVendida, cantidadDeshechada, dineroAdquirido, unidad));
         }
     }
 
@@ -153,7 +154,7 @@ public class ManejadorArchivos {
         for (int i = 2; i < data.size(); i+=2) {
             float cantidad = Float.parseFloat(data.get(i));
             Producto producto = productos.get(Integer.parseInt(data.get(i+1)));
-            cantidadesProductos.add(new CantidadProducto(cantidad, producto));
+            try {cantidadesProductos.add(new CantidadProducto(cantidad, producto));} catch (Exception e) {}
         }
         return new Recibo(fecha, clientes.get(cedula), cantidadesProductos);
     }

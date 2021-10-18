@@ -11,8 +11,15 @@ import java.util.Date;
 
 public class Inventario extends ProcesamientoSupermercado{
 
-    private void eliminarLotesVencidos(String nombreProducto){
+    private void eliminarLotesVencidosPorNombre(String nombreProducto) throws Exception {
+        Producto producto = getProductoPorNombre(nombreProducto);
 
+    }
+
+    private void eliminarLotesVencidosPorCodigo(int codigo) throws Exception {
+        Producto producto = getProductoPorCodigo(codigo);
+        if (producto == null) throw new Exception("No hay producto asociado al código.");
+        else producto.eliminarLotesVencidos(Calendar.getInstance().getTime());
     }
 
     private void informacionInventarioProducto(){

@@ -18,12 +18,29 @@ public class POS extends ProcesamientoSupermercado{
         return (actualRecibo != null);
     }
 
-    private void generarRecibo(){
-
+    public String generarRecibo() throws Exception {
+        checkPedido();
+        return actualRecibo.generarRecibo();
     }
 
-    private void registrarClienteEnSistemaPuntos(){
+    public String cerrarRecibo() throws Exception {
+        checkPedido();
+        String mensaje = actualRecibo.generarRecibo();
+        actualRecibo.cerrar();
+        actualRecibo = null;
+        return mensaje;
+    }
 
+    public boolean existeCliente(int cedula){
+        return (clientesPorCedula.get(cedula) != null);
+    }
+
+    public void registrarClienteEnSistemaPuntos(String nombre, int cedula, int edad, float puntos,
+                                                Sexo sexo, SituacionEmpleo situacionEmpleo, EstadoCivil estadoCivil) throws Exception {
+        if (existeCliente(cedula)) throw new Exception("El cliente ya existe.");
+        else {
+            clientesPorCedula.put(cedula,new Cliente(nombre, cedula, edad, puntos, sexo, situacionEmpleo, estadoCivil));
+        }
     }
 
     public void agregarCantidadProducto(float cantidad) throws Exception {
@@ -64,8 +81,16 @@ public class POS extends ProcesamientoSupermercado{
         } else throw new Exception("Ya hay un producto siendo agregado.");
     }
 
-    private void eliminarProducto(String nombreProducto) throws Exception {
+    public void eliminarProductoPorNombre(String nombreProducto) throws Exception {
         checkPedido();
+        Producto producto = getProductoPorNombre(nombreProducto);
+        actualRecibo.eliminarProducto(producto);
+    }
+
+    public void eliminarProductoPorCodigo(int codigo) throws Exception {
+        checkPedido();
+        Producto producto = getProductoPorCodigo(codigo);
+        actualRecibo.eliminarProducto(producto);
     }
 
     public void iniciarPedido() throws Exception {
@@ -78,9 +103,5 @@ public class POS extends ProcesamientoSupermercado{
         checkPedido();
         checkProducto();
         return actualProducto instanceof ProductoEmpaquetado;
-    }
-
-    public void eliminarProducto() {
-
     }
 }

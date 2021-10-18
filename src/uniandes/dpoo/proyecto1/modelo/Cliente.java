@@ -65,6 +65,9 @@ public class Cliente {
 		return recibos;
 	}
 
+	public void añadirPuntos(float puntos) {
+		this.puntos += puntos;
+	}
 }
 
 
