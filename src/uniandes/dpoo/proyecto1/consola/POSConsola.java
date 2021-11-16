@@ -53,6 +53,7 @@ public class POSConsola {
 				activo = true;
 		}
 		try{System.out.println(pos.generarRecibo());} catch (Exception e) {}
+		// Genera excepción cuando no hay recibo en POS.
 		if (activo) presionarTeclaParaContinuar();
 		return activo;
 	}

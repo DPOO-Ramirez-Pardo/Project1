@@ -55,6 +55,10 @@ public class Cliente {
 		recibos.add(recibo);
 	}
 
+	/**
+	 *
+	 * @return El texto de la línea que corresponde a la información del cliente en clientes.txt.
+	 */
 	public String lineaArchivo(){
 		return nombre + "," + String.valueOf(cedula) + "," + String.valueOf(edad) + "," +
 				String.valueOf(puntos) + "," + sexo.toString() + "," +

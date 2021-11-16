@@ -38,6 +38,10 @@ public Lote(Date fechaLlegada, Date fechaVencimiento, float cantidadInicial, flo
 		return cantidadActual;
 	}
 
+	/**
+	 *
+	 * @return El texto de la línea que corresponde a la información del cliente en lotes.txt.
+	 */
 	public String lineaArchivo(){
 		return DateFormat.getDateInstance().format(fechaLlegada) +","
 				+DateFormat.getDateInstance().format(fechaVencimiento)+","
@@ -61,6 +65,11 @@ public Lote(Date fechaLlegada, Date fechaVencimiento, float cantidadInicial, flo
 		this.precioVentaAlPublico = precioVentaAlPublico;
 	}
 
+	/**
+	 *
+	 * @param unidad Unidad del producto al cual se refiere el lote.
+	 * @return String con la información del lote.
+	 */
     public String stringInformacion(String unidad) {
     	return MessageFormat.format("""
 				Información Lote:

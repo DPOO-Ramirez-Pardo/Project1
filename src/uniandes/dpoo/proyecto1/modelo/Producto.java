@@ -93,6 +93,10 @@ public abstract class Producto {
 		categorias.add(categoria);
 	}
 
+	/**
+	 * Elimina los Lotes vencidos anteriores a la fecha dada.
+	 * @param fecha Fecha de hoy.
+	 */
 	public void eliminarLotesVencidos(Date fecha){
 		for (int i = 0; i < lotes.size(); ++i){
 			Lote lote = lotes.get(i);
@@ -103,6 +107,11 @@ public abstract class Producto {
 		}
 	}
 
+	/**
+	 * Elimina el lote vencido especificado de la lista de Lotes. Es abstracta porque
+	 * el cálculo del dinero perdido difiere entre diferentes tipos de productos.
+	 * @param lote Lote a eliminar
+	 */
 	protected abstract void eliminarLoteVencido(Lote lote);
 
 	public String lineaArchivo(){
@@ -119,10 +128,23 @@ public abstract class Producto {
 		return lotes.get(lotes.size()-1).getPrecioVentaAlPublico();
 	}
 
+	/**
+	 *
+	 * @return String con la información del producto.
+	 */
 	public abstract String stringInformacion();
 
+	/**
+	 *
+	 * @return String especificando el desempeño financiero del producto.
+	 */
 	public abstract String stringDesempeñoFinanciero();
 
+	/**
+	 * Reduce la cantidad total del Producto a la cantidad especificada del lote.
+	 * @param cantidad Cantidad a reducir.
+	 * @throws Exception Cuando el producto no tiene la cantidad especificada disponible.
+	 */
 	public void reducirCantidad(float cantidad) throws Exception {
 		dineroAdquirido += precioProductos(cantidad) - costoProductos(cantidad);
 		cantidadVendida += cantidad;
@@ -138,6 +160,10 @@ public abstract class Producto {
 		}
 	}
 
+	/**
+	 *
+	 * @return String con la información de todos los Lotes del Producto.
+	 */
     public String stringInformacionLotes() {
 		StringBuilder builder = new StringBuilder();
 		for(Lote lote: lotes){

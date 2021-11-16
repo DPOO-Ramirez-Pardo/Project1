@@ -110,6 +110,11 @@ public class POS extends ProcesamientoSupermercado{
         actualProducto = null;
     }
 
+    public CantidadProducto getCantidadProducto(int index){
+        ArrayList<CantidadProducto> cantidadesProductos = actualRecibo.getCantidadesProductos();
+        return cantidadesProductos.get(index);
+    }
+
     public void añadirTitular(int cedula) {
         actualRecibo.añadirTitular(clientesPorCedula.get(cedula));
     }
