@@ -5,9 +5,9 @@ import java.util.Calendar;
 
 public class ProductoEmpaquetado extends Producto{
 	private float peso;
-	public ProductoEmpaquetado (String nombre, String descripcion, int codigo, CondicionAlmacenamiento condicion,
+	public ProductoEmpaquetado (String nombre, String descripcion, String pathImagen, int codigo, CondicionAlmacenamiento condicion,
 								float cantidadVendida, float cantidadDeshechada, float dineroAdquirido, String unidad, float peso) {
-		super(nombre, descripcion, codigo, condicion, cantidadVendida, cantidadDeshechada, dineroAdquirido, unidad);
+		super(nombre, descripcion, pathImagen, codigo, condicion, cantidadVendida, cantidadDeshechada, dineroAdquirido, unidad);
 		this.peso = peso;
 	}
 	public float getPeso() {

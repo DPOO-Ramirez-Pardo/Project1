@@ -60,6 +60,11 @@ public class POSPedidoMenu extends JPanel implements ActionListener {
         agregandoProducto = true;
     }
 
+    public void reiniciar(){
+        listaProductos.reiniciar();
+        this.agregarProducto();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(anadirTitularButton)){

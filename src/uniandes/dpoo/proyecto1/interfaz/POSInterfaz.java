@@ -4,6 +4,7 @@ import uniandes.dpoo.proyecto1.procesamiento.POS;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 public class POSInterfaz extends JFrame {
     private POS pos;
@@ -36,9 +37,9 @@ public class POSInterfaz extends JFrame {
             pos.iniciarPedido();
             remove(mainMenu);
             add(pedidoMenu, BorderLayout.CENTER);
-            setVisible(false);
-            this.validate();
-            setVisible(true);
+            pedidoMenu.reiniciar();
+            this.revalidate();
+            this.repaint();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -52,9 +53,16 @@ public class POSInterfaz extends JFrame {
     }
 
     public void verHistorialCliente() {
+
     }
 
     public void salirDeLaAplicacion() {
+        try {
+            pos.cerrarProcesamiento();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.exit(0);
     }
 
     public void volverMainMenu(int back) {

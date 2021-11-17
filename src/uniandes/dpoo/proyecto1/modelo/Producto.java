@@ -6,6 +6,7 @@ import java.util.LinkedList;
 public abstract class Producto {
 	protected String nombre;
 	protected String descripcion;
+	protected String pathImagen;
 	protected int codigo;
 	protected CondicionAlmacenamiento condicion;
 	protected float cantidadVendida;
@@ -16,10 +17,11 @@ public abstract class Producto {
 	protected String unidad;
 	protected float cantidadActual;
 
-	public Producto(String nombre, String descripcion, int codigo, CondicionAlmacenamiento condicion,
+	public Producto(String nombre, String descripcion, String pathImagen, int codigo, CondicionAlmacenamiento condicion,
 					float cantidadVendida, float cantidadDeshechada, float dineroAdquirido, String unidad) {
 		this.nombre = nombre;
 		this.descripcion = descripcion;
+		this.pathImagen = pathImagen;
 		this.codigo = codigo;
 		this.condicion = condicion;
 		this.cantidadVendida = cantidadVendida;
@@ -66,6 +68,14 @@ public abstract class Producto {
 
 	public String getUnidad() {
 		return unidad;
+	}
+
+	public String getPathImagen() {
+		return pathImagen;
+	}
+
+	public void setPathImagen(String pathImagen) {
+		this.pathImagen = pathImagen;
 	}
 
 	public abstract float costoProductos(float cantidad) throws Exception;
@@ -115,7 +125,7 @@ public abstract class Producto {
 	protected abstract void eliminarLoteVencido(Lote lote);
 
 	public String lineaArchivo(){
-		return nombre +","+descripcion+","+Integer.toString(codigo)+","+condicion.toString()+","
+		return nombre +","+descripcion+","+pathImagen+","+Integer.toString(codigo)+","+condicion.toString()+","
 				+Float.toString(cantidadVendida)+","+Float.toString(cantidadDeshechada)+","
 				+Float.toString(dineroAdquirido)+","+unidad;
 	}
@@ -171,5 +181,9 @@ public abstract class Producto {
 		}
 		return builder.toString();
     }
+
+	public float getCantidadTotal() {
+		return 0;
+	}
 }
 

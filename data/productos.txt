@@ -1,4 +1,4 @@
-Cheetos,Alimento crocante con tartrazina.,2456613,Cualquiera,58.0,2.0,508000.0,g,150.0
-Doritos,Alimento crocante con tartrazina.,2987468,Cualquiera,72.0,100.0,20000.0,g,150.0
-Coca-Cola,Bebida Azucarada que dá paros cardiacos.,9092834,Cualquiera,500.0,100.0,-190000.0,ml,400.0
-FuzeTea Durazno,Bebida Azucarada que no dá paros cardiacos.,7034549,Cualquiera,200.0,20.0,30000.0,ml,400.0
+Cheetos,Alimento crocante con tartrazina.,C:\Users\drami\DEV\Project1\imagenes\/cheetos.png,2456613,Cualquiera,58.0,2.0,508000.0,g,150.0
+Doritos,Alimento crocante con tartrazina.,,2987468,Cualquiera,72.0,100.0,20000.0,g,150.0
+Coca-Cola,Bebida Azucarada que dá paros cardiacos.,,9092834,Cualquiera,500.0,100.0,-190000.0,ml,400.0
+FuzeTea Durazno,Bebida Azucarada que no dá paros cardiacos.,,7034549,Cualquiera,200.0,20.0,30000.0,ml,400.0

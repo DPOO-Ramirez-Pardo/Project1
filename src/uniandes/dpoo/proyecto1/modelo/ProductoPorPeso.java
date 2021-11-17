@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ProductoPorPeso extends Producto{
-	public ProductoPorPeso (String nombre, String descripcion, int codigo, CondicionAlmacenamiento condicion,
+	public ProductoPorPeso (String nombre, String descripcion, String pathImagen, int codigo, CondicionAlmacenamiento condicion,
 							float cantidadVendida, float cantidadDeshechada, float dineroAdquirido, String unidad) {
-		super(nombre, descripcion, codigo, condicion, cantidadVendida, cantidadDeshechada, dineroAdquirido, unidad);
+		super(nombre, descripcion, pathImagen, codigo, condicion, cantidadVendida, cantidadDeshechada, dineroAdquirido, unidad);
 	}
 
 	@Override

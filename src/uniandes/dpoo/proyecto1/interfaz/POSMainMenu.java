@@ -17,11 +17,11 @@ public class POSMainMenu extends JPanel implements ActionListener {
     private JPanel barraDerecha;
     private JPanel barraDerechaAbajo;
 
-    private POSInterfaz parent;
+    private POSInterfaz posInterfaz;
 
-    public POSMainMenu(POS pos, POSInterfaz parent){
+    public POSMainMenu(POS pos, POSInterfaz posInterfaz){
         this.pos = pos;
-        this.parent = parent;
+        this.posInterfaz = posInterfaz;
         setLayout(new BorderLayout());
 
         iniciarPedidoButton = new JButton("INICIAR PEDIDO");
@@ -65,13 +65,13 @@ public class POSMainMenu extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(iniciarPedidoButton)){
-            parent.iniciarPedido();
+            posInterfaz.iniciarPedido();
         } else if (e.getSource().equals(registrarClienteButton)) {
-            parent.registrarCliente();
+            posInterfaz.registrarCliente();
         } else if (e.getSource().equals(verHistorialClienteButton)){
-            parent.verHistorialCliente();
+            posInterfaz.verHistorialCliente();
         } else if (e.getSource().equals(salirDeLaAplicacion)){
-            parent.salirDeLaAplicacion();
+            posInterfaz.salirDeLaAplicacion();
         }
     }
 }

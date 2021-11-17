@@ -107,8 +107,14 @@ public class POSInformacionPedidoCantidadProducto extends JPanel implements Acti
         seccionAbajo.add(cambiarCantidad);
         seccionAbajo.add(eliminarProducto);
 
+        JPanel seccionDerecha = new JPanel();
+        seccionDerecha.setLayout(new BorderLayout());
+        seccionDerecha.add(new JLabel("Imagen:"), BorderLayout.NORTH);
+        seccionDerecha.add(new ImagenProducto(cantidadProducto.getProducto().getPathImagen()));
+
         add(seccionSuperior, BorderLayout.NORTH);
         add(seccionIzquierda, BorderLayout.WEST);
+        add(seccionDerecha, BorderLayout.CENTER);
         add(seccionAbajo, BorderLayout.SOUTH);
     }
 

@@ -67,18 +67,19 @@ public class ManejadorArchivos {
     private void cargarProducto(ArrayList<String> data) {
         String nombre = data.get(0);
         String descripcion = data.get(1);
-        int codigo = Integer.parseInt(data.get(2));
-        CondicionAlmacenamiento condicionAlmacenamiento = CondicionAlmacenamiento.valueOf(data.get(3));
-        float cantidadVendida = Float.parseFloat(data.get(4));
-        float cantidadDeshechada = Float.parseFloat(data.get(5));
-        float dineroAdquirido = Float.parseFloat(data.get(6));
-        String unidad = data.get(7);
-        if (data.size() > 8){
-            float peso = Float.parseFloat(data.get(8));
-            productos.put(codigo, new ProductoEmpaquetado(nombre, descripcion, codigo, condicionAlmacenamiento,
+        String pathImagen = data.get(2);
+        int codigo = Integer.parseInt(data.get(3));
+        CondicionAlmacenamiento condicionAlmacenamiento = CondicionAlmacenamiento.valueOf(data.get(4));
+        float cantidadVendida = Float.parseFloat(data.get(5));
+        float cantidadDeshechada = Float.parseFloat(data.get(6));
+        float dineroAdquirido = Float.parseFloat(data.get(7));
+        String unidad = data.get(8);
+        if (data.size() > 9){
+            float peso = Float.parseFloat(data.get(9));
+            productos.put(codigo, new ProductoEmpaquetado(nombre, descripcion, pathImagen, codigo, condicionAlmacenamiento,
                     cantidadVendida, cantidadDeshechada, dineroAdquirido, unidad, peso));
         } else {
-            productos.put(codigo, new ProductoPorPeso(nombre, descripcion, codigo, condicionAlmacenamiento,
+            productos.put(codigo, new ProductoPorPeso(nombre, descripcion, pathImagen, codigo, condicionAlmacenamiento,
                     cantidadVendida, cantidadDeshechada, dineroAdquirido, unidad));
         }
     }

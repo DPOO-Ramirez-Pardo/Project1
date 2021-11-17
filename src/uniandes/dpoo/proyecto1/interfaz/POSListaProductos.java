@@ -118,4 +118,11 @@ public class POSListaProductos extends JPanel implements ActionListener, ListSel
             pedidoMenu.verInformacionProducto(cantidadProducto);
         }
     }
+
+    public void reiniciar() {
+        actualizarLista();
+        try{
+            remove(agregarProductoButton);
+        } catch (Exception e){}
+    }
 }
