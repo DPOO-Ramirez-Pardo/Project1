@@ -114,20 +114,33 @@ public class POSFormatoRegistrarCliente extends JPanel implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(registrarButton)){
-            try {
-                pos.registrarClienteEnSistemaPuntos(nombreCliente.getText(),
-                        Integer.parseInt(cedulaCliente.getText()),
-                        Integer.parseInt(edadCliente.getText()), 0,
-                        Sexo.valueOf((String)generoCliente.getSelectedItem()),
-                        SituacionEmpleo.valueOf((String)situacionEmpleoCliente.getSelectedItem()),
-                        EstadoCivil.valueOf((String)estadoCivilCliente.getSelectedItem()));
-                posInterfaz.volverMainMenu(1);
-            } catch (Exception exception) {
-                JOptionPane.showMessageDialog(posInterfaz, exception.getMessage(),
-                        "Exception!", JOptionPane.PLAIN_MESSAGE);
-            }
+            registrarCliente();
         } else if (e.getSource().equals(cancelarButton)){
-            posInterfaz.volverMainMenu(1);
+            volverMenu();
         }
+    }
+
+    private void registrarCliente() {
+        try {
+            pos.registrarClienteEnSistemaPuntos(nombreCliente.getText(),
+                    Integer.parseInt(cedulaCliente.getText()),
+                    Integer.parseInt(edadCliente.getText()), 0,
+                    Sexo.valueOf((String)generoCliente.getSelectedItem()),
+                    SituacionEmpleo.valueOf((String)situacionEmpleoCliente.getSelectedItem()),
+                    EstadoCivil.valueOf((String)estadoCivilCliente.getSelectedItem()));
+            volverMenu();
+        } catch (Exception exception) {
+            JOptionPane.showMessageDialog(posInterfaz, exception.getMessage(),
+                    "Exception!", JOptionPane.PLAIN_MESSAGE);
+        }
+    }
+
+    private void volverMenu() {
+        if (back == 0) posInterfaz.volverMainMenu(1);
+        else if (back == 1) posInterfaz.reanudarPedido();
+    }
+
+    public void setBack(int back) {
+        this.back = back;
     }
 }

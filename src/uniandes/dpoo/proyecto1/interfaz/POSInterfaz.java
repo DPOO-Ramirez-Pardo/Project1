@@ -45,8 +45,17 @@ public class POSInterfaz extends JFrame {
         }
     }
 
-    public void registrarCliente() {
-        remove(mainMenu);
+    public void reanudarPedido(){
+        remove(formatoRegistrarCliente);
+        add(pedidoMenu, BorderLayout.CENTER);
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void registrarCliente(int back) {
+        if (back == 0) remove(mainMenu);
+        else if (back == 1) remove(pedidoMenu);
+        formatoRegistrarCliente.setBack(back);
         add(formatoRegistrarCliente, BorderLayout.CENTER);
         this.revalidate();
         this.repaint();

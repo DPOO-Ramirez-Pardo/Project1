@@ -122,4 +122,8 @@ public class POS extends ProcesamientoSupermercado{
     public void cancelarRecibo() {
         actualRecibo = null;
     }
+
+    public RecibosClienteMes getRecibosClienteMes(int cedula, int mes, int año){
+        return new RecibosClienteMes(clientesPorCedula.get(cedula), mes, año);
+    }
 }

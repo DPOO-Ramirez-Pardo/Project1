@@ -70,7 +70,7 @@ public class POSPedidoMenu extends JPanel implements ActionListener {
         if(e.getSource().equals(anadirTitularButton)){
             añadirTitular();
         } else if (e.getSource().equals(registrarClienteButton)){
-            parent.registrarCliente();
+            parent.registrarCliente(1);
         } else if (e.getSource().equals(cancelarPedidoButton)){
             pos.cancelarRecibo();
             parent.volverMainMenu(0);
@@ -87,7 +87,25 @@ public class POSPedidoMenu extends JPanel implements ActionListener {
     }
 
     private void añadirTitular() {
-
+        String textoCedula = (String) JOptionPane.showInputDialog(parent,
+                "Introduzca la cédula del cliente:","Añadir Titular",
+                JOptionPane.PLAIN_MESSAGE, null, null, "");
+        if (textoCedula != null){
+            try{
+                int cedula = Integer.parseInt(textoCedula);
+                if (pos.existeCliente(cedula)){
+                    pos.añadirTitular(cedula);
+                    JOptionPane.showMessageDialog(parent, "¡El Cliente fue añadido exitosamente!",
+                            "¡Éxito!", JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(parent, "¡El Cliente no Existe!",
+                            "¡Entrada Inválida!", JOptionPane.PLAIN_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(parent, "¡Introduzca un número por favor!",
+                        "¡Entrada Inválida!", JOptionPane.PLAIN_MESSAGE);
+            }
+        }
     }
 
     public void verInformacionProducto(CantidadProducto cantidadProducto){

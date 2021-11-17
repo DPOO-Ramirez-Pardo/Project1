@@ -67,7 +67,7 @@ public class POSMainMenu extends JPanel implements ActionListener {
         if (e.getSource().equals(iniciarPedidoButton)){
             posInterfaz.iniciarPedido();
         } else if (e.getSource().equals(registrarClienteButton)) {
-            posInterfaz.registrarCliente();
+            posInterfaz.registrarCliente(0);
         } else if (e.getSource().equals(verHistorialClienteButton)){
             posInterfaz.verHistorialCliente();
         } else if (e.getSource().equals(salirDeLaAplicacion)){

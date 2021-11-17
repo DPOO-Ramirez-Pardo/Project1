@@ -94,6 +94,10 @@ public class Recibo {
 		this.cliente = cliente;
 	}
 
+	public float getTotal(){
+		return (float) (subtotal*1.19);
+	}
+
 	/**
 	 * @return String correspondiente al Recibo
 	 * @throws Exception En ningún caso (habría botado excepción en agregarCantidadProducto).
