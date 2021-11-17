@@ -78,7 +78,7 @@ public class InventarioEliminarLotesVencidosMenu extends JPanel implements Actio
                 inventario.eliminarLotesVencidosPorNombre(nombreProducto.getText());
                 inventarioInterfaz.volverMainMenu(2);
                 JOptionPane.showMessageDialog(inventarioInterfaz, "Se eliminaron los lotes exitosamente.",
-                        "¡Vacío!", JOptionPane.PLAIN_MESSAGE);
+                        "¡Éxito!", JOptionPane.PLAIN_MESSAGE);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(inventarioInterfaz, exception.getMessage(),
                         "Exception!", JOptionPane.PLAIN_MESSAGE);
@@ -88,7 +88,7 @@ public class InventarioEliminarLotesVencidosMenu extends JPanel implements Actio
                 inventario.eliminarLotesVencidosPorCodigo(Integer.parseInt(codigoProducto.getText()));
                 inventarioInterfaz.volverMainMenu(2);
                 JOptionPane.showMessageDialog(inventarioInterfaz, "Se eliminaron los lotes exitosamente.",
-                        "¡Vacío!", JOptionPane.PLAIN_MESSAGE);
+                        "¡Éxito!", JOptionPane.PLAIN_MESSAGE);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(inventarioInterfaz, exception.getMessage(),
                         "Exception!", JOptionPane.PLAIN_MESSAGE);
