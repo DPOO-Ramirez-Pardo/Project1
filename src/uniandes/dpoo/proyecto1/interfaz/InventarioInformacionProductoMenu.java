@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class InventarioInformacionProductoMenu extends JPanel implements ActionListener {
     private Inventario inventario;
@@ -27,6 +29,16 @@ public class InventarioInformacionProductoMenu extends JPanel implements ActionL
     private JButton mostrarLotes;
     private JButton volver;
 
+    private KeyAdapter numberOnly = new KeyAdapter() {
+        public void keyPressed(KeyEvent ke) {
+            if ((ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') || ke.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                codigoProducto.setEditable(true);
+            } else {
+                codigoProducto.setEditable(false);
+            }
+        }
+    };
+
     public InventarioInformacionProductoMenu(Inventario inventario, InventarioInterfaz inventarioInterfaz){
         this.inventario = inventario;
         this.inventarioInterfaz = inventarioInterfaz;
@@ -35,6 +47,7 @@ public class InventarioInformacionProductoMenu extends JPanel implements ActionL
 
         nombreProducto = new JTextField();
         codigoProducto = new JTextField();
+        codigoProducto.addKeyListener(numberOnly);
         descripcionProducto = new JTextField();
         descripcionProducto.setEditable(false);
         condicionAlmacenamientoProducto = new JTextField();
@@ -130,42 +143,71 @@ public class InventarioInformacionProductoMenu extends JPanel implements ActionL
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(buscarProductoNombre)){
-            try {
-                Producto producto = inventario.getProductoPorNombre(nombreProducto.getText());
-                setProducto(producto);
-            } catch (Exception exception) {
-                JOptionPane.showMessageDialog(inventarioInterfaz, exception.getMessage(),
-                        "Exception!", JOptionPane.PLAIN_MESSAGE);
-            }
+            buscarProductoPorNombre();
         } else if (e.getSource().equals(buscarProductoCodigo)){
-            Producto producto = inventario.getProductoPorCodigo(Integer.parseInt(codigoProducto.getText()));
-            if (producto != null){
-                setProducto(producto);
-            } else {
-                JOptionPane.showMessageDialog(inventarioInterfaz, "¡No se encontró un producto con ese código!",
-                        "Exception!", JOptionPane.PLAIN_MESSAGE);
-            }
-
+            buscarProductoPorCodigo();
         } else if (e.getSource().equals(cambiarImagenButton)){
-            if (producto != null){
-                FileDialog fileDialog = new FileDialog(inventarioInterfaz, "Imagen", FileDialog.LOAD);
-                fileDialog.setVisible(true);
-                String newPath = fileDialog.getDirectory() + fileDialog.getFile();
-                if (newPath != null){
-                    producto.setPathImagen(newPath);
-                    actualizarInformacion();
-                }
+            cambiarImagenProducto();
+        } else if (e.getSource().equals(mostrarInformacionFinanciera)){
+            mostrarInformacionFinancieraProducto();
+        } else if (e.getSource().equals(mostrarLotes)){
+            if(producto != null){
+                new InventarioLotesProducto(producto);
             } else {
-                JOptionPane.showMessageDialog(inventarioInterfaz, "¡No se encontró un producto para cambiar su imagen!",
+                JOptionPane.showMessageDialog(inventarioInterfaz, "¡No se encontró un producto para ver sus Lotes!",
                         "Exception!", JOptionPane.PLAIN_MESSAGE);
             }
-
-        } else if (e.getSource().equals(mostrarInformacionFinanciera)){
-
-        } else if (e.getSource().equals(mostrarLotes)){
-
         } else if (e.getSource().equals(volver)){
             inventarioInterfaz.volverMainMenu(0);
+        }
+    }
+
+    private void mostrarInformacionFinancieraProducto() {
+        if(producto != null){
+            try {
+                new InventarioInformacionFinancieraProducto(producto.getNombre(),
+                        inventario.desempenoFinancieroProductoPorCodigo(producto.getCodigo()));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        } else {
+            JOptionPane.showMessageDialog(inventarioInterfaz, "¡No se encontró un producto para ver su Desempeño!",
+                    "Exception!", JOptionPane.PLAIN_MESSAGE);
+        }
+    }
+
+    private void cambiarImagenProducto() {
+        if (producto != null){
+            FileDialog fileDialog = new FileDialog(inventarioInterfaz, "Imagen", FileDialog.LOAD);
+            fileDialog.setVisible(true);
+            String newPath = fileDialog.getDirectory() + fileDialog.getFile();
+            if (newPath != null){
+                producto.setPathImagen(newPath);
+                actualizarInformacion();
+            }
+        } else {
+            JOptionPane.showMessageDialog(inventarioInterfaz, "¡No se encontró un producto para cambiar su imagen!",
+                    "Exception!", JOptionPane.PLAIN_MESSAGE);
+        }
+    }
+
+    private void buscarProductoPorCodigo() {
+        Producto producto = inventario.getProductoPorCodigo(Integer.parseInt(codigoProducto.getText()));
+        if (producto != null){
+            setProducto(producto);
+        } else {
+            JOptionPane.showMessageDialog(inventarioInterfaz, "¡No se encontró un producto con ese código!",
+                    "Exception!", JOptionPane.PLAIN_MESSAGE);
+        }
+    }
+
+    private void buscarProductoPorNombre() {
+        try {
+            Producto producto = inventario.getProductoPorNombre(nombreProducto.getText());
+            setProducto(producto);
+        } catch (Exception exception) {
+            JOptionPane.showMessageDialog(inventarioInterfaz, exception.getMessage(),
+                    "Exception!", JOptionPane.PLAIN_MESSAGE);
         }
     }
 }

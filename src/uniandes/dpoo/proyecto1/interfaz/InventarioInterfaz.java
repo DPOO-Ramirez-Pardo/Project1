@@ -15,7 +15,7 @@ public class InventarioInterfaz extends JFrame {
     private InventarioEliminarLotesVencidosMenu eliminarLotesVencidosMenu;
 
     public InventarioInterfaz(){
-        setTitle("Lights Out");
+        setTitle("Inventario");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(800,800);
         setLayout(new BorderLayout());
@@ -24,6 +24,7 @@ public class InventarioInterfaz extends JFrame {
         inventario = new Inventario();
         mainMenu = new InventarioMainMenu(inventario, this);
         informacionProductoMenu = new InventarioInformacionProductoMenu(inventario, this);
+        eliminarLotesVencidosMenu = new InventarioEliminarLotesVencidosMenu(inventario, this);
 
         add(mainMenu, BorderLayout.CENTER);
 
@@ -42,7 +43,10 @@ public class InventarioInterfaz extends JFrame {
     }
 
     public void eliminarLotesVencidos() {
-
+        remove(mainMenu);
+        add(eliminarLotesVencidosMenu, BorderLayout.CENTER);
+        this.revalidate();
+        this.repaint();
     }
 
     public void agregarCategoria() {
