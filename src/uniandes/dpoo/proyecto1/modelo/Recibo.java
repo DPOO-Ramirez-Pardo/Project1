@@ -9,15 +9,15 @@ public class Recibo {
 	private ArrayList <CantidadProducto> cantidadesProductos;
 	private float subtotal;
 
-	public Recibo (Date fecha, Cliente cliente, ArrayList<CantidadProducto> cantidadesProductos){
+	public Recibo (Date fecha, Cliente cliente, ArrayList<CantidadProducto> cantidadesProductos, float subtotal){
 		this.fecha = fecha;
 		this.cliente = cliente;
 		this.cantidadesProductos = cantidadesProductos;
-		this.subtotal = 0;
+		this.subtotal = subtotal;
 	}
 
 	public Recibo (Date fecha) {
-		this(fecha, null, new ArrayList<>());
+		this(fecha, null, new ArrayList<>(), 0);
 	}
 
 	public Cliente getCliente() {
@@ -44,7 +44,7 @@ public class Recibo {
 					.append(cantidadesProductos.get(i).getProducto().getCodigo()).append(",")
 					.append(cantidadesProductos.get(i).getCosto());} catch (Exception e) {}
 		}
-		return builder.toString();
+		return builder.append(",").append(subtotal).toString();
 	}
 
 	/**

@@ -129,11 +129,13 @@ public class POSPedidoMenu extends JPanel implements ActionListener {
     }
 
     private void agregarProducto() {
-        remove(informacionPedidoCantidadProducto);
-        add(menuAgregarProducto, BorderLayout.CENTER);
-        agregandoProducto = true;
-        this.revalidate();
-        this.repaint();
+        if(!agregandoProducto){
+            remove(informacionPedidoCantidadProducto);
+            add(menuAgregarProducto, BorderLayout.CENTER);
+            agregandoProducto = true;
+            this.revalidate();
+            this.repaint();
+        }
     }
 
     public void eliminarProducto() {

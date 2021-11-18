@@ -17,7 +17,6 @@ public class ImagenProducto extends JPanel {
         this.path = path;
         try {
             image = ImageIO.read(new File(path));
-            System.out.println("Imagen leida");
         } catch (IOException e) {
             image = null;
             e.printStackTrace();

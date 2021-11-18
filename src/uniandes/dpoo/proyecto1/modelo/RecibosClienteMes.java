@@ -7,9 +7,13 @@ import java.util.Date;
 
 public class RecibosClienteMes {
     private ArrayList<Recibo> recibosMes;
+    private int mes;
+    private int año;
     private float cantidadGastadaMes[];
 
     public RecibosClienteMes(Cliente cliente, int mes, int año) {
+        this.mes = mes;
+        this.año = año;
         ArrayList<Recibo> recibos = cliente.getRecibos();
         recibosMes = new ArrayList<>();
 
@@ -43,7 +47,38 @@ public class RecibosClienteMes {
                 cantidadGastadaMes[dia] += recibo.getTotal();
             }
         }
+    }
 
 
+    public int getMes() {
+        return mes;
+    }
+
+    public void setMes(int mes) {
+        this.mes = mes;
+    }
+
+    public int getAño() {
+        return año;
+    }
+
+    public void setAño(int año) {
+        this.año = año;
+    }
+
+    public ArrayList<Recibo> getRecibosMes() {
+        return recibosMes;
+    }
+
+    public void setRecibosMes(ArrayList<Recibo> recibosMes) {
+        this.recibosMes = recibosMes;
+    }
+
+    public float[] getCantidadGastadaMes() {
+        return cantidadGastadaMes;
+    }
+
+    public void setCantidadGastadaMes(float[] cantidadGastadaMes) {
+        this.cantidadGastadaMes = cantidadGastadaMes;
     }
 }

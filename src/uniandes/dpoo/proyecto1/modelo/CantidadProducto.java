@@ -39,7 +39,7 @@ public class CantidadProducto {
     }
 
 	public void reducirCantidadEnLotes() throws Exception {
-		costo = producto.costoProductos(cantidad);
+		costo = producto.precioProductos(cantidad);
 		producto.reducirCantidad(cantidad);
 	}
 }

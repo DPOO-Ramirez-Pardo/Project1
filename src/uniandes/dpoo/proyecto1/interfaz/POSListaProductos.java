@@ -35,34 +35,38 @@ public class POSListaProductos extends JPanel implements ActionListener, ListSel
     public void actualizarLista(){
         try {
             String reciboString = pos.generarRecibo();
-            String lineasRecibo[] = reciboString.split("\n");
-            int relleno = 5;
-            int inicio = 1;
-            if(lineasRecibo[1].contains("cliente")){
-                relleno = 7;
-                inicio = 3;
-            }
-            if (lineasRecibo.length > relleno){
-                String lineasProductos[] = new String[lineasRecibo.length - relleno];
-                for (int i = inicio; i < lineasRecibo.length - 4; i++){
-                    lineasProductos[i - inicio] = lineasRecibo[i];
-                }
-                estilizarLista(lineasProductos);
-            } else{
-                remove(listaProductos);
-                listaProductos = new JList();
-            }
-            add(listaProductos, BorderLayout.NORTH);
-            finalRecibo.removeAll();
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 3]));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 2]));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 1]));
+            generarNuevaJListRecibo(reciboString);
             this.revalidate();
             this.repaint();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void generarNuevaJListRecibo(String reciboString) {
+        String lineasRecibo[] = reciboString.split("\n");
+        int relleno = 5;
+        int inicio = 1;
+        if(lineasRecibo[1].contains("cliente")){
+            relleno = 7;
+            inicio = 3;
+        }
+        if (lineasRecibo.length > relleno){
+            String lineasProductos[] = new String[lineasRecibo.length - relleno];
+            for (int i = inicio; i < lineasRecibo.length - 4; i++){
+                lineasProductos[i - inicio] = lineasRecibo[i];
+            }
+            estilizarLista(lineasProductos);
+        } else{
+            remove(listaProductos);
+            listaProductos = new JList();
+        }
+        add(listaProductos, BorderLayout.NORTH);
+        finalRecibo.removeAll();
+        finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 3]));
+        finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 2]));
+        finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 1]));
     }
 
     public POSListaProductos(POS pos, POSPedidoMenu pedidoMenu, JButton agregarProductoButton){

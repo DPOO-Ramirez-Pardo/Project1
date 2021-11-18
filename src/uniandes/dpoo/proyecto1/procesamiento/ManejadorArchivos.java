@@ -181,14 +181,15 @@ public class ManejadorArchivos {
         int cedula = Integer.parseInt(data.get(0));
         Date fecha = DateFormat.getDateInstance().parse(data.get(1));
         ArrayList<CantidadProducto> cantidadesProductos = new ArrayList<>();
-        for (int i = 2; i < data.size(); i+=3) {
+        for (int i = 2; i < data.size()-1; i+=3) {
             float cantidad = Float.parseFloat(data.get(i));
             Producto producto = productos.get(Integer.parseInt(data.get(i+1)));
             float costo = Float.parseFloat(data.get(i+2));
             try {cantidadesProductos.add(new CantidadProducto(cantidad, producto, costo));} catch (Exception e) {}
         }
-        if (cedula == 0) return new Recibo(fecha, null, cantidadesProductos);
-        else return new Recibo(fecha, clientes.get(cedula), cantidadesProductos);
+        float subtotal = Float.parseFloat(data.get(data.size()-1));
+        if (cedula == 0) return new Recibo(fecha, null, cantidadesProductos,subtotal);
+        else return new Recibo(fecha, clientes.get(cedula), cantidadesProductos,subtotal);
     }
 
     private ArrayList<String> getData(Scanner scanner) {
