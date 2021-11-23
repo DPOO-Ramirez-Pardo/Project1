@@ -19,8 +19,6 @@ public class ImagenProducto extends JPanel {
             image = ImageIO.read(new File(path));
         } catch (IOException e) {
             image = null;
-            e.printStackTrace();
-            System.out.println(e.getMessage());
         }
         setPreferredSize(new Dimension(200,200));
     }

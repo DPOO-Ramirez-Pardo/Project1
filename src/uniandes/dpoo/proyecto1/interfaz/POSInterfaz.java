@@ -4,10 +4,12 @@ import uniandes.dpoo.proyecto1.procesamiento.POS;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.time.Year;
 
-public class POSInterfaz extends JFrame {
+public class POSInterfaz extends JFrame implements WindowListener {
     private POS pos;
     private POSMainMenu mainMenu;
     private POSPedidoMenu pedidoMenu;
@@ -16,7 +18,8 @@ public class POSInterfaz extends JFrame {
 
     public POSInterfaz(){
         setTitle("Lights Out");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(this);
         setSize(800,800);
         setLayout(new BorderLayout());
         setBackground(Color.white);
@@ -107,4 +110,38 @@ public class POSInterfaz extends JFrame {
     }
 
 
+    @Override
+    public void windowOpened(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        salirDeLaAplicacion();
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+
+    }
 }

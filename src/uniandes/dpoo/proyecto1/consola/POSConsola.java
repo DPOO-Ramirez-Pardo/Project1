@@ -1,4 +1,5 @@
 package uniandes.dpoo.proyecto1.consola;
+import uniandes.dpoo.proyecto1.exceptions.SinReciboActualException;
 import uniandes.dpoo.proyecto1.procesamiento.*;
 
 import java.io.IOException;
@@ -75,7 +76,11 @@ public class POSConsola {
 		System.out.println("Introduzca la cédula del cliente:");
 		int cedula = leerEntero(new Scanner(System.in));
 		if (pos.existeCliente(cedula)){
-			pos.añadirTitular(cedula);
+			try{
+				pos.añadirTitular(cedula);
+			} catch (SinReciboActualException e) {
+				System.out.println(e.getMessage());
+			}
 			System.out.println("Cliente añadido exitosamente al recibo");
 		} else {
 			System.out.println("No existe cliente con esa cédula.");
@@ -97,7 +102,7 @@ public class POSConsola {
 		String nombre = scanner.nextLine();
 		System.out.println("Introduzca la edad del Cliente:");
 		int edad = leerEntero(scanner);
-		float puntos = 0;
+		int puntos = 0;
 		Sexo sexo = leerSexo(scanner);
 		SituacionEmpleo situacionEmpleo = leerSituacionEmpleo(scanner);
 		EstadoCivil estadoCivil = leerEstadoCivil(scanner);

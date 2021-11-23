@@ -1,3 +1,3 @@
-Santiago Serrano,1000986543,19,428.4,Masculino,Empleado,Casado
-Santiago Ivan Pardo,1000932405,19,100.0,Masculino,Estudiante,Soltero
-Diego Alejandro Ramirez Garrido,1000180835,19,596.27,Masculino,Estudiante,Soltero
+Santiago Serrano,1000986543,19,428,Masculino,Empleado,Casado
+Santiago Ivan Pardo,1000932405,19,100,Masculino,Estudiante,Soltero
+Diego Alejandro Ramirez Garrido,1000180835,19,599,Masculino,Estudiante,Soltero

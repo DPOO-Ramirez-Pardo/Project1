@@ -1,5 +1,9 @@
 package uniandes.dpoo.proyecto1.interfaz;
 
+import uniandes.dpoo.proyecto1.exceptions.ClienteNoAñadidoException;
+import uniandes.dpoo.proyecto1.exceptions.PuntosMayoresTotalException;
+import uniandes.dpoo.proyecto1.exceptions.SinPuntosSuficientesException;
+import uniandes.dpoo.proyecto1.exceptions.SinReciboActualException;
 import uniandes.dpoo.proyecto1.modelo.CantidadProducto;
 import uniandes.dpoo.proyecto1.procesamiento.POS;
 
@@ -14,6 +18,7 @@ public class POSPedidoMenu extends JPanel implements ActionListener {
     private JButton generarReciboButton;
     private JButton anadirTitularButton;
     private JButton agregarProductoButton;
+    private JButton redimirPuntosButton;
 
     private POSListaProductos listaProductos;
     private POSInformacionPedidoCantidadProducto informacionPedidoCantidadProducto;
@@ -36,19 +41,22 @@ public class POSPedidoMenu extends JPanel implements ActionListener {
         generarReciboButton = new JButton("GENERAR RECIBO");
         anadirTitularButton = new JButton("AÑADIR TITULAR");
         agregarProductoButton = new JButton("AGREGAR PRODUCTO");
+        redimirPuntosButton = new JButton("REDIMIR PUNTOS");
 
         registrarClienteButton.addActionListener(this);
         cancelarPedidoButton.addActionListener(this);
         generarReciboButton.addActionListener(this);
         anadirTitularButton.addActionListener(this);
         agregarProductoButton.addActionListener(this);
+        redimirPuntosButton.addActionListener(this);
 
         menuAgregarProducto = new POSMenuAgregarProducto(pos, this, parent);
         listaProductos = new POSListaProductos(pos, this, agregarProductoButton);
 
         barraAbajo = new JPanel();
-        barraAbajo.setLayout(new GridLayout(1,4,30,0));
+        barraAbajo.setLayout(new GridLayout(1,5,30,0));
         barraAbajo.add(anadirTitularButton);
+        barraAbajo.add(redimirPuntosButton);
         barraAbajo.add(registrarClienteButton);
         barraAbajo.add(cancelarPedidoButton);
         barraAbajo.add(generarReciboButton);
@@ -83,6 +91,62 @@ public class POSPedidoMenu extends JPanel implements ActionListener {
             }
         } else if (e.getSource().equals(agregarProductoButton)){
             agregarProducto();
+        } else if (e.getSource().equals(redimirPuntosButton)){
+            redimirPuntos();
+        }
+    }
+
+    private void redimirPuntos(){
+        try {
+            if (!pos.reciboTieneCliente()) {
+                JOptionPane.showMessageDialog(parent, "No hay Titular del Recibo", "¡Error!",
+                        JOptionPane.PLAIN_MESSAGE);
+            } else {
+                Object[] options = {"Redimir mayor cantidad de puntos posibles", "Redimir una cantidad específica de puntos",
+                        "No redimir puntos", "Cancelar"};
+                int opcion = JOptionPane.showOptionDialog(parent, null, "Redimir Puntos",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[3]);
+                if (opcion == 0){
+                    pos.redimirMaximoPuntos();
+                    listaProductos.actualizarLista();
+                    this.revalidate();
+                    this.repaint();
+                    JOptionPane.showMessageDialog(parent,
+                            "¡Se redimirán " + pos.getPuntosRedimidos() + " puntos!",
+                            "¡Éxito!", JOptionPane.PLAIN_MESSAGE);
+                } else if (opcion == 1){
+                    redimirCantidadArbitrariaPuntos();
+                } else if (opcion == 2){
+                    try {
+                        pos.redimirPuntos(0);
+                        listaProductos.actualizarLista();
+                        this.revalidate();
+                        this.repaint();
+                        JOptionPane.showMessageDialog(parent, "¡Se actualizó a cero!",
+                                "¡Éxito!", JOptionPane.PLAIN_MESSAGE);
+                    } catch (ClienteNoAñadidoException | SinPuntosSuficientesException | PuntosMayoresTotalException e) {}
+                }
+            }
+        } catch (SinReciboActualException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void redimirCantidadArbitrariaPuntos() throws SinReciboActualException {
+        int puntos = Integer.parseInt(JOptionPane.showInputDialog(parent, "Introduzca la cantidad de puntos a redimir: ",
+                "Redimir Puntos", JOptionPane.PLAIN_MESSAGE));
+        try {
+            pos.redimirPuntos(puntos);
+            listaProductos.actualizarLista();
+            this.revalidate();
+            this.repaint();
+            JOptionPane.showMessageDialog(parent, "¡Se redimirán esos puntos!",
+                    "¡Éxito!", JOptionPane.PLAIN_MESSAGE);
+        } catch (SinPuntosSuficientesException | PuntosMayoresTotalException e) {
+            JOptionPane.showMessageDialog(parent, e.getMessage(), "¡Error!", JOptionPane.PLAIN_MESSAGE);
+        } catch (ClienteNoAñadidoException e) {
+            e.printStackTrace();
         }
     }
 
@@ -104,6 +168,8 @@ public class POSPedidoMenu extends JPanel implements ActionListener {
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(parent, "¡Introduzca un número por favor!",
                         "¡Entrada Inválida!", JOptionPane.PLAIN_MESSAGE);
+            } catch (SinReciboActualException e) {
+                e.printStackTrace();
             }
         }
     }

@@ -120,7 +120,7 @@ public class ManejadorArchivos {
         String nombre = data.get(0);
         int cedula = Integer.parseInt(data.get(1));
         int edad = Integer.parseInt(data.get(2));
-        float puntos = Float.parseFloat(data.get(3));
+        int puntos = Integer.parseInt(data.get(3));
         Sexo sexo = Sexo.valueOf(data.get(4));
         SituacionEmpleo situacionEmpleo = SituacionEmpleo.valueOf(data.get(5));
         EstadoCivil estadoCivil = EstadoCivil.valueOf(data.get(6));
@@ -180,16 +180,20 @@ public class ManejadorArchivos {
     private Recibo cargarRecibo(ArrayList<String> data) throws ParseException {
         int cedula = Integer.parseInt(data.get(0));
         Date fecha = DateFormat.getDateInstance().parse(data.get(1));
+        int puntosAcumulados = Integer.parseInt(data.get(2));
+        int puntosRedimidos = Integer.parseInt(data.get(3));
         ArrayList<CantidadProducto> cantidadesProductos = new ArrayList<>();
-        for (int i = 2; i < data.size()-1; i+=3) {
+        for (int i = 4; i < data.size()-1; i+=3) {
             float cantidad = Float.parseFloat(data.get(i));
             Producto producto = productos.get(Integer.parseInt(data.get(i+1)));
             float costo = Float.parseFloat(data.get(i+2));
             try {cantidadesProductos.add(new CantidadProducto(cantidad, producto, costo));} catch (Exception e) {}
         }
         float subtotal = Float.parseFloat(data.get(data.size()-1));
-        if (cedula == 0) return new Recibo(fecha, null, cantidadesProductos,subtotal);
-        else return new Recibo(fecha, clientes.get(cedula), cantidadesProductos,subtotal);
+        if (cedula == 0) return new Recibo(fecha, null, cantidadesProductos,
+                subtotal, puntosAcumulados, puntosRedimidos);
+        else return new Recibo(fecha, clientes.get(cedula), cantidadesProductos,
+                subtotal, puntosAcumulados, puntosRedimidos);
     }
 
     private ArrayList<String> getData(Scanner scanner) {

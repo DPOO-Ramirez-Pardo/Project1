@@ -1,4 +1,8 @@
 package uniandes.dpoo.proyecto1.modelo;
+import uniandes.dpoo.proyecto1.exceptions.ClienteNoAñadidoException;
+import uniandes.dpoo.proyecto1.exceptions.PuntosMayoresTotalException;
+import uniandes.dpoo.proyecto1.exceptions.SinPuntosSuficientesException;
+
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.ArrayList;
@@ -8,16 +12,23 @@ public class Recibo {
 	private Cliente cliente;
 	private ArrayList <CantidadProducto> cantidadesProductos;
 	private float subtotal;
+	private int puntosAntes;
+	private int puntosRedimidos;
 
-	public Recibo (Date fecha, Cliente cliente, ArrayList<CantidadProducto> cantidadesProductos, float subtotal){
+
+
+	public Recibo (Date fecha, Cliente cliente, ArrayList<CantidadProducto> cantidadesProductos, float subtotal,
+				   int puntosAntes, int puntosRedimidos){
 		this.fecha = fecha;
 		this.cliente = cliente;
 		this.cantidadesProductos = cantidadesProductos;
 		this.subtotal = subtotal;
+		this.puntosAntes = puntosAntes;
+		this.puntosRedimidos = puntosRedimidos;
 	}
 
 	public Recibo (Date fecha) {
-		this(fecha, null, new ArrayList<>(), 0);
+		this(fecha, null, new ArrayList<>(), 0, 0, 0);
 	}
 
 	public Cliente getCliente() {
@@ -38,7 +49,8 @@ public class Recibo {
 	 */
 	public String lineaArchivo(){
 		StringBuilder builder = new StringBuilder().append(cliente != null ? cliente.getCedula(): 0).append(",")
-				.append(DateFormat.getDateInstance().format(fecha));
+				.append(DateFormat.getDateInstance().format(fecha)).append(",").append(puntosAntes).append(",")
+				.append(puntosRedimidos);
 		for (int i = 0; i < cantidadesProductos.size(); i++) {
 			try {builder.append(",").append(cantidadesProductos.get(i).getCantidad()).append(",")
 					.append(cantidadesProductos.get(i).getProducto().getCodigo()).append(",")
@@ -90,10 +102,6 @@ public class Recibo {
 		}
 	}
 
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
-
 	public float getTotal(){
 		return (float) (subtotal*1.19);
 	}
@@ -114,6 +122,10 @@ public class Recibo {
 		builder.append("-----\nsubtotal: ").append(subtotal).append("\n")
 				.append("IVA: ").append(subtotal*0.19).append("\n")
 				.append("total: ").append(subtotal*1.19).append("\n");
+		if (cliente != null) builder.append("-----\n").append("Puntos Acumulados Antes de la Compra: ").append(puntosAntes)
+									.append("\n").append("Puntos Redimidos en la Compra: ").append(puntosRedimidos)
+									.append("\n").append("Puntos Acumulados en la Compra: ").append(getPuntosAcumulados())
+									.append("\n").append("Puntos Acumulados Después de la Compra: ").append(getPuntosDespues());
 		return builder.toString();
 	}
 
@@ -127,10 +139,50 @@ public class Recibo {
 			// Como reducirCantidadEnLotes bota una excepción hay que hacer un try/catch statement.
 			// Sin embargo, en la práctica esa excepción nunca ocurrirá.
 		}
-		if (cliente != null) cliente.añadirPuntos((float) (subtotal * 1.19 / 1000));
+		if (cliente != null) cliente.añadirPuntos((int)(subtotal * 1.19 / 1000));
 	}
 
     public void añadirTitular(Cliente cliente) {
 		this.cliente = cliente;
+		if (cliente != null){
+			this.puntosAntes = cliente.getPuntos();
+		}
+		else this.puntosAntes = 0;
+		this.puntosRedimidos = 0;
     }
+
+	public void redimirPuntos(int puntosRedimidos) throws ClienteNoAñadidoException, PuntosMayoresTotalException, SinPuntosSuficientesException {
+		System.out.println(puntosRedimidos);
+		if (cliente == null) throw new ClienteNoAñadidoException();
+		else if (subtotal * 1.19 - puntosRedimidos * 15 <= -15) throw new PuntosMayoresTotalException();
+		else {
+			if (cliente.getPuntos() - puntosRedimidos < 0) throw new SinPuntosSuficientesException();
+			else {
+				this.puntosRedimidos = puntosRedimidos;
+			}
+		}
+	}
+
+	public int getPuntosAntes() {
+		return puntosAntes;
+	}
+
+	public int getPuntosAcumulados() {
+		return (int)((subtotal*1.19 - puntosRedimidos * 15) / 1000);
+	}
+
+	public int getPuntosRedimidos() {
+		return puntosRedimidos;
+	}
+
+	public int maximoPuntosRedimidos() {
+		if (cliente == null) return 0;
+		int puntosCompra = (int) (subtotal * 1.19 / 15);
+		if(subtotal * 1.19 - puntosCompra * 15 > 0) puntosCompra++;
+		return Math.min(puntosCompra, cliente.getPuntos());
+	}
+
+	public int getPuntosDespues(){
+		return puntosAntes + getPuntosAcumulados() - puntosRedimidos;
+	}
 }

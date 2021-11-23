@@ -1,5 +1,9 @@
 package uniandes.dpoo.proyecto1.procesamiento;
 
+import uniandes.dpoo.proyecto1.exceptions.ClienteNoAñadidoException;
+import uniandes.dpoo.proyecto1.exceptions.PuntosMayoresTotalException;
+import uniandes.dpoo.proyecto1.exceptions.SinPuntosSuficientesException;
+import uniandes.dpoo.proyecto1.exceptions.SinReciboActualException;
 import uniandes.dpoo.proyecto1.modelo.*;
 
 import java.util.ArrayList;
@@ -36,7 +40,7 @@ public class POS extends ProcesamientoSupermercado{
         return (clientesPorCedula.get(cedula) != null);
     }
 
-    public void registrarClienteEnSistemaPuntos(String nombre, int cedula, int edad, float puntos,
+    public void registrarClienteEnSistemaPuntos(String nombre, int cedula, int edad, int puntos,
                                                 Sexo sexo, SituacionEmpleo situacionEmpleo, EstadoCivil estadoCivil) throws Exception {
         if (existeCliente(cedula)) throw new Exception("El cliente ya existe.");
         else {
@@ -115,8 +119,15 @@ public class POS extends ProcesamientoSupermercado{
         return cantidadesProductos.get(index);
     }
 
-    public void añadirTitular(int cedula) {
-        actualRecibo.añadirTitular(clientesPorCedula.get(cedula));
+    public void añadirTitular(int cedula) throws SinReciboActualException {
+        if (actualRecibo == null) throw new SinReciboActualException();
+        else actualRecibo.añadirTitular(clientesPorCedula.get(cedula));
+    }
+
+    public void redimirPuntos(int puntos) throws ClienteNoAñadidoException, SinPuntosSuficientesException,
+            PuntosMayoresTotalException, SinReciboActualException {
+        if (actualRecibo == null) throw new SinReciboActualException();
+        else actualRecibo.redimirPuntos(puntos);
     }
 
     public void cancelarRecibo() {
@@ -125,5 +136,26 @@ public class POS extends ProcesamientoSupermercado{
 
     public RecibosClienteMes getRecibosClienteMes(int cedula, int mes, int año){
         return new RecibosClienteMes(clientesPorCedula.get(cedula), mes, año);
+    }
+
+    public void redimirMaximoPuntos() throws SinReciboActualException {
+        if (actualRecibo == null) throw new SinReciboActualException();
+        else {
+            try {
+                actualRecibo.redimirPuntos(actualRecibo.maximoPuntosRedimidos());
+            } catch (ClienteNoAñadidoException | PuntosMayoresTotalException | SinPuntosSuficientesException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean reciboTieneCliente() throws SinReciboActualException {
+        if (actualRecibo == null) throw new SinReciboActualException();
+        else return actualRecibo.getCliente() != null;
+    }
+
+    public int getPuntosRedimidos() throws SinReciboActualException {
+        if (actualRecibo == null) throw new SinReciboActualException();
+        return actualRecibo.getPuntosRedimidos();
     }
 }

@@ -5,13 +5,13 @@ public class Cliente {
 	private String nombre;
 	private int cedula;
 	private int edad;
-	private float puntos;
+	private int puntos;
 	private Sexo sexo;
 	private EstadoCivil estadoCivil;
 	private SituacionEmpleo situacionEmpleo;
 	private ArrayList <Recibo> recibos;
 	
-	public Cliente (String nombre, int cedula, int edad, float puntos,
+	public Cliente (String nombre, int cedula, int edad, int puntos,
 					Sexo sexo, SituacionEmpleo situacionEmpleo, EstadoCivil estadoCivil) {
 		this.nombre = nombre;
 		this.cedula = cedula;
@@ -35,7 +35,7 @@ public class Cliente {
 		return edad;
 	}
 
-	public float getPuntos() {
+	public int getPuntos() {
 		return puntos;
 	}
 
@@ -69,7 +69,7 @@ public class Cliente {
 		return recibos;
 	}
 
-	public void añadirPuntos(float puntos) {
+	public void añadirPuntos(int puntos) {
 		this.puntos += puntos;
 	}
 }
