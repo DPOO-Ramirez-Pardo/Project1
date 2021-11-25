@@ -1,4 +1,6 @@
 package uniandes.dpoo.proyecto1.modelo;
+import uniandes.dpoo.proyecto1.exceptions.FechasCantidadesInconsistentesException;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -16,6 +18,7 @@ public abstract class Producto {
 	protected ArrayList<Categoria> categorias;
 	protected String unidad;
 	protected float cantidadActual;
+	private ComportamientoProducto comportamientoProducto;
 
 	public Producto(String nombre, String descripcion, String pathImagen, int codigo, CondicionAlmacenamiento condicion,
 					float cantidadVendida, float cantidadDeshechada, float dineroAdquirido, String unidad) {
@@ -183,7 +186,19 @@ public abstract class Producto {
     }
 
 	public float getCantidadTotal() {
-		return 0;
+    	float total = 0;
+		for(Lote lote: lotes){
+			total += lote.getCantidadActual();
+		}
+		return total;
+	}
+
+	public ComportamientoProducto getComportamientoProducto(){
+    	return comportamientoProducto;
+	}
+
+	public void setComportamiento(ComportamientoProducto comportamientoProducto) {
+		this.comportamientoProducto = comportamientoProducto;
 	}
 }
 

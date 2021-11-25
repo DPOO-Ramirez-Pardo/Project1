@@ -90,7 +90,8 @@ public abstract class ProcesamientoSupermercado {
     public ProcesamientoSupermercado(){
         try {
             manejadorArchivos = new ManejadorArchivos("data/clientes.txt","data/categorias.txt",
-                    "data/productos.txt", "data/lotes.txt", "data/recibos.txt");
+                    "data/productos.txt", "data/lotes.txt", "data/recibos.txt",
+                    "data/comportamientos.txt");
             productosPorCodigo = manejadorArchivos.getProductos();
             clientesPorCedula = manejadorArchivos.getClientes();
             categorias = manejadorArchivos.getCategorias();

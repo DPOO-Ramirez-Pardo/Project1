@@ -1,5 +1,6 @@
 package uniandes.dpoo.proyecto1.procesamiento;
 
+import uniandes.dpoo.proyecto1.exceptions.FechasCantidadesInconsistentesException;
 import uniandes.dpoo.proyecto1.modelo.*;
 
 import java.io.File;
@@ -25,6 +26,7 @@ public class ManejadorArchivos {
     private String pathProductos;
     private String pathLotes;
     private String pathRecibos;
+    private String pathComportamientos;
 
     public HashMap<Integer, Producto> getProductos() {
         return productos;
@@ -39,7 +41,7 @@ public class ManejadorArchivos {
     }
 
     public ManejadorArchivos(String pathClientes, String pathCategorias, String pathProductos,
-                             String pathLotes, String pathRecibos) throws FileNotFoundException, ParseException {
+                             String pathLotes, String pathRecibos, String pathComportamientos) throws FileNotFoundException, ParseException {
         clientes = new HashMap<>();
         categorias = new TreeMap<>();
         productos = new HashMap<>();
@@ -48,12 +50,14 @@ public class ManejadorArchivos {
         this.pathProductos = pathProductos;
         this.pathLotes = pathLotes;
         this.pathRecibos = pathRecibos;
+        this.pathComportamientos = pathComportamientos;
         recibosSinCedula = new ArrayList<>();
         cargarClientes(pathClientes);
         cargarProductos(pathProductos);
         cargarCategorias(pathCategorias);
         cargarLotes(pathLotes);
         cargarRecibos(pathRecibos);
+        cargarComportamientoProductos(pathComportamientos);
     }
 
     private void cargarProductos(String path) throws FileNotFoundException {
@@ -196,6 +200,29 @@ public class ManejadorArchivos {
                 subtotal, puntosAcumulados, puntosRedimidos);
     }
 
+    private void cargarComportamientoProductos(String path) throws FileNotFoundException, ParseException {
+        Scanner scanner = getScanner(path);
+        while (scanner.hasNextLine()){
+            ArrayList<String> data = getData(scanner);
+            cargarComportamientoProducto(data);
+        }
+    }
+
+    private void cargarComportamientoProducto(ArrayList<String> data) throws ParseException {
+        int codigo = Integer.parseInt(data.get(0));
+        ArrayList<Date> fechas = new ArrayList<>();
+        ArrayList<Float> cantidades = new ArrayList<>();
+        for (int i = 1; i < data.size(); i+= 2) {
+            fechas.add(DateFormat.getDateInstance().parse(data.get(i)));
+            cantidades.add(Float.parseFloat(data.get(i+1)));
+        }
+        try {
+            productos.get(codigo).setComportamiento(new ComportamientoProducto(fechas, cantidades, productos.get(codigo)));
+        } catch (FechasCantidadesInconsistentesException e) {
+            e.printStackTrace();
+        }
+    }
+
     private ArrayList<String> getData(Scanner scanner) {
         String line = scanner.nextLine();
         return new ArrayList<>(Arrays.asList(line.split(",")));
@@ -269,14 +296,25 @@ public class ManejadorArchivos {
     private void guardarProductos() throws IOException {
         StringBuilder productosBuilder = new StringBuilder();
         StringBuilder lotesBuilder = new StringBuilder();
+        StringBuilder comportamientosBuilder = new StringBuilder();
         for(Producto producto: productos.values()){
             productosBuilder.append(producto.lineaArchivo()).append('\n');
             for (Lote lote: producto.getLotes()){
                 lotesBuilder.append(producto.getCodigo()).append(',').append(lote.lineaArchivo()).append('\n');
             }
+            ComportamientoProducto comportamientoProducto = producto.getComportamientoProducto();
+            if (comportamientoProducto == null){
+                try {
+                    producto.setComportamiento(new ComportamientoProducto(new ArrayList<>(), new ArrayList<>(), producto));
+                } catch (FechasCantidadesInconsistentesException e) {
+                    e.printStackTrace();
+                }
+            }
+            comportamientosBuilder.append(producto.getComportamientoProducto().lineaArchivo()).append('\n');
         }
         writeFile(productosBuilder, pathProductos);
         writeFile(lotesBuilder, pathLotes);
+        writeFile(comportamientosBuilder, pathComportamientos);
     }
 
 

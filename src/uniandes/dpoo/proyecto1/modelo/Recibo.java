@@ -154,9 +154,9 @@ public class Recibo {
 	public void redimirPuntos(int puntosRedimidos) throws ClienteNoAñadidoException, PuntosMayoresTotalException, SinPuntosSuficientesException {
 		System.out.println(puntosRedimidos);
 		if (cliente == null) throw new ClienteNoAñadidoException();
-		else if (subtotal * 1.19 - puntosRedimidos * 15 <= -15) throw new PuntosMayoresTotalException();
+		else if (subtotal * 1.19 - puntosRedimidos * 15 <= -15) throw new PuntosMayoresTotalException(this);
 		else {
-			if (cliente.getPuntos() - puntosRedimidos < 0) throw new SinPuntosSuficientesException();
+			if (cliente.getPuntos() - puntosRedimidos < 0) throw new SinPuntosSuficientesException(cliente);
 			else {
 				this.puntosRedimidos = puntosRedimidos;
 			}

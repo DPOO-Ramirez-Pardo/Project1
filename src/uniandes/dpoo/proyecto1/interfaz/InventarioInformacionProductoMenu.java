@@ -26,6 +26,7 @@ public class InventarioInformacionProductoMenu extends JPanel implements ActionL
     private JButton buscarProductoCodigo;
     private JButton cambiarImagenButton;
     private JButton mostrarInformacionFinanciera;
+    private JButton mostrarComportamientoButton;
     private JButton mostrarLotes;
     private JButton volver;
 
@@ -67,6 +68,8 @@ public class InventarioInformacionProductoMenu extends JPanel implements ActionL
         cambiarImagenButton.addActionListener(this);
         mostrarInformacionFinanciera = new JButton("MOSTRAR INFORMACIÓN FINANCIERA");
         mostrarInformacionFinanciera.addActionListener(this);
+        mostrarComportamientoButton = new JButton("MOSTRAR COMPORTAMIENTO");
+        mostrarComportamientoButton.addActionListener(this);
         mostrarLotes = new JButton("MOSTRAR LOTES");
         mostrarLotes.addActionListener(this);
         volver = new JButton("VOLVER");
@@ -116,9 +119,10 @@ public class InventarioInformacionProductoMenu extends JPanel implements ActionL
         add(seccionCentral, BorderLayout.CENTER);
 
         JPanel seccionAbajo = new JPanel();
-        seccionAbajo.setLayout(new GridLayout(1,3,100,0));
+        seccionAbajo.setLayout(new GridLayout(1,4,100,0));
         seccionAbajo.add(mostrarInformacionFinanciera);
         seccionAbajo.add(mostrarLotes);
+        seccionAbajo.add(mostrarComportamientoButton);
         seccionAbajo.add(volver);
         add(seccionAbajo, BorderLayout.SOUTH);
     }
@@ -159,6 +163,13 @@ public class InventarioInformacionProductoMenu extends JPanel implements ActionL
             }
         } else if (e.getSource().equals(volver)){
             inventarioInterfaz.volverMainMenu(0);
+        } else if (e.getSource().equals(mostrarComportamientoButton)){
+            if(producto != null){
+                new InventarioGraficaComportamientoProducto(producto.getComportamientoProducto());
+            } else {
+                JOptionPane.showMessageDialog(inventarioInterfaz, "¡No se encontró un producto para ver su Comportamiento!",
+                        "Exception!", JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
@@ -181,7 +192,7 @@ public class InventarioInformacionProductoMenu extends JPanel implements ActionL
             FileDialog fileDialog = new FileDialog(inventarioInterfaz, "Imagen", FileDialog.LOAD);
             fileDialog.setVisible(true);
             String newPath = fileDialog.getDirectory() + fileDialog.getFile();
-            if (newPath != null){
+            if (fileDialog.getDirectory() != null){
                 producto.setPathImagen(newPath);
                 actualizarInformacion();
             }

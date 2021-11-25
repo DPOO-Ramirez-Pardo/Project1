@@ -1,4 +1,9 @@
 package uniandes.dpoo.proyecto1.exceptions;
 
-public class SinPuntosSuficientesException extends Throwable {
+import uniandes.dpoo.proyecto1.modelo.Cliente;
+
+public class SinPuntosSuficientesException extends Exception {
+    public SinPuntosSuficientesException(Cliente cliente) {
+        super("¡El cliente tiene únicamente "+cliente.getPuntos()+"!");
+    }
 }
