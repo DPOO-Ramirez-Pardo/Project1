@@ -4,6 +4,7 @@ import uniandes.dpoo.proyecto1.exceptions.FechasCantidadesInconsistentesExceptio
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Objects;
 
 public abstract class Producto {
 	protected String nombre;
@@ -199,6 +200,19 @@ public abstract class Producto {
 
 	public void setComportamiento(ComportamientoProducto comportamientoProducto) {
 		this.comportamientoProducto = comportamientoProducto;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Producto producto = (Producto) o;
+		return codigo == producto.codigo;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(codigo);
 	}
 }
 
