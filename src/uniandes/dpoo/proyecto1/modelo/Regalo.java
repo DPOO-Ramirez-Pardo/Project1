@@ -1,5 +1,7 @@
 package uniandes.dpoo.proyecto1.modelo;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 public class Regalo extends Promocion{
@@ -7,8 +9,8 @@ public class Regalo extends Promocion{
     private int pague;
     private int lleve;
 
-    public Regalo(Date inicio, Date vencimiento, Producto producto, int pague, int lleve){
-        super(inicio,vencimiento);
+    public Regalo(String id, Date inicio, Date vencimiento, Producto producto, int pague, int lleve){
+        super(id, inicio,vencimiento);
         this.producto = producto;
         this.pague = pague;
         this.lleve = lleve;
@@ -52,5 +54,12 @@ public class Regalo extends Promocion{
             }
         }
         return false;
+    }
+
+    @Override
+    public Collection<Producto> getProductos() {
+        ArrayList<Producto> listaProductos = new ArrayList<>();
+        listaProductos.add(producto);
+        return listaProductos;
     }
 }

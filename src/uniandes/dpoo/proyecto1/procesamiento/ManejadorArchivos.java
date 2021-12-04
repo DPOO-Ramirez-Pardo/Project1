@@ -1,25 +1,21 @@
 package uniandes.dpoo.proyecto1.procesamiento;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import uniandes.dpoo.proyecto1.exceptions.FechasCantidadesInconsistentesException;
 import uniandes.dpoo.proyecto1.modelo.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
+import org.json.simple.parser.JSONParser;
 
 public class ManejadorArchivos {
     private HashMap<Integer, Producto> productos;
     private TreeMap<String, Categoria> categorias;
     private HashMap<Integer, Cliente> clientes;
-
-    public ArrayList<Recibo> getRecibosSinCedula() {
-        return recibosSinCedula;
-    }
-
+    private HashMap<String, Promocion> promocionesPorID;
     private ArrayList<Recibo> recibosSinCedula;
     private String pathClientes;
     private String pathCategorias;
@@ -27,6 +23,7 @@ public class ManejadorArchivos {
     private String pathLotes;
     private String pathRecibos;
     private String pathComportamientos;
+    private String pathPromociones;
 
     public HashMap<Integer, Producto> getProductos() {
         return productos;
@@ -40,8 +37,18 @@ public class ManejadorArchivos {
         return clientes;
     }
 
+    public ArrayList<Recibo> getRecibosSinCedula() {
+        return recibosSinCedula;
+    }
+
+    public HashMap<String, Promocion> getPromocionesPorID() {
+        return promocionesPorID;
+    }
+
+
+
     public ManejadorArchivos(String pathClientes, String pathCategorias, String pathProductos,
-                             String pathLotes, String pathRecibos, String pathComportamientos) throws FileNotFoundException, ParseException {
+                             String pathLotes, String pathRecibos, String pathComportamientos, String pathPromociones) throws IOException, ParseException, org.json.simple.parser.ParseException {
         clientes = new HashMap<>();
         categorias = new TreeMap<>();
         productos = new HashMap<>();
@@ -51,11 +58,13 @@ public class ManejadorArchivos {
         this.pathLotes = pathLotes;
         this.pathRecibos = pathRecibos;
         this.pathComportamientos = pathComportamientos;
+        this.pathPromociones = pathPromociones;
         recibosSinCedula = new ArrayList<>();
         cargarClientes(pathClientes);
         cargarProductos(pathProductos);
         cargarCategorias(pathCategorias);
         cargarLotes(pathLotes);
+        cargarPromociones(pathPromociones);
         cargarRecibos(pathRecibos);
         cargarComportamientoProductos(pathComportamientos);
     }
@@ -187,16 +196,23 @@ public class ManejadorArchivos {
         int puntosAcumulados = Integer.parseInt(data.get(2));
         int puntosRedimidos = Integer.parseInt(data.get(3));
         ArrayList<CantidadProducto> cantidadesProductos = new ArrayList<>();
-        for (int i = 4; i < data.size()-1; i+=3) {
-            float cantidad = Float.parseFloat(data.get(i));
-            Producto producto = productos.get(Integer.parseInt(data.get(i+1)));
-            float costo = Float.parseFloat(data.get(i+2));
-            try {cantidadesProductos.add(new CantidadProducto(cantidad, producto, costo));} catch (Exception e) {}
+        ArrayList<Promocion> promocionesRecibo = new ArrayList<>();
+        int i;
+        for (i = 4; i < data.size()-1; i+=3) {
+            if (data.get(i).charAt(0) != 'P') {
+                float cantidad = Float.parseFloat(data.get(i));
+                Producto producto = productos.get(Integer.parseInt(data.get(i+1)));
+                float costo = Float.parseFloat(data.get(i+2));
+                try {cantidadesProductos.add(new CantidadProducto(cantidad, producto, costo));} catch (Exception e) {}
+            } else break;
+        }
+        for (i = i; i < data.size()-1; i++) {
+            promocionesRecibo.add(promocionesPorID.get(data.get(i)));
         }
         float subtotal = Float.parseFloat(data.get(data.size()-1));
-        if (cedula == 0) return new Recibo(fecha, null, cantidadesProductos,
+        if (cedula == 0) return new Recibo(fecha, null, cantidadesProductos, promocionesRecibo,
                 subtotal, puntosAcumulados, puntosRedimidos);
-        else return new Recibo(fecha, clientes.get(cedula), cantidadesProductos,
+        else return new Recibo(fecha, clientes.get(cedula), cantidadesProductos, promocionesRecibo,
                 subtotal, puntosAcumulados, puntosRedimidos);
     }
 
@@ -315,6 +331,55 @@ public class ManejadorArchivos {
         writeFile(productosBuilder, pathProductos);
         writeFile(lotesBuilder, pathLotes);
         writeFile(comportamientosBuilder, pathComportamientos);
+    }
+
+    private void cargarPromociones(String path) throws org.json.simple.parser.ParseException, ParseException, IOException {
+        File directory = new File(path);
+        String files[] = directory.list();
+        promocionesPorID = new HashMap<>();
+        for (int i = 0; i < files.length; i++) {
+            Promocion promocion = cargarPromocion(path + "/" +files[i]);
+            promocionesPorID.put(promocion.getId(),promocion);
+        }
+    }
+
+    private Promocion cargarPromocion(String path) throws IOException, org.json.simple.parser.ParseException, ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(new FileReader(path));
+        String tipo = (String) jsonObject.get("tipo");
+        String id = (String) jsonObject.get("id");
+        Date inicio = DateFormat.getDateInstance().parse((String) jsonObject.get("inicio"));
+        Date vencimiento = DateFormat.getDateInstance().parse((String) jsonObject.get("vencimiento"));
+        if (tipo.equals("Combo")) {
+            return cargarCombo(jsonObject, id, inicio, vencimiento);
+        } else {
+            Producto producto = productos.get((int) ( (long) jsonObject.get("producto")));
+            if (tipo.equals("Descuento")){
+                float porcentaje = (float) ((double) jsonObject.get("porcentaje"));
+                return new Descuento(id, inicio, vencimiento, producto, porcentaje);
+            } else if (tipo.equals("PuntosMultiplicados")){
+                int multiplicador = (Integer) jsonObject.get("multiplicador");
+                return new PuntosMultiplicados(id, inicio, vencimiento, producto, multiplicador);
+            } else {
+                int pague = (Integer) jsonObject.get("pague");
+                int lleve = (Integer) jsonObject.get("lleve");
+                return new Regalo(id, inicio, vencimiento, producto, pague, lleve);
+            }
+        }
+    }
+
+    private Combo cargarCombo(JSONObject jsonObject, String id, Date inicio, Date vencimiento) {
+        HashMap<Producto, Integer> cantidadesCombo = new HashMap<>();
+        JSONArray codigosProductos = (JSONArray) jsonObject.get("productos");
+        JSONArray cantidades = (JSONArray) jsonObject.get("productos");
+        Iterator<Integer> codigosIterator = codigosProductos.iterator();
+        Iterator<Integer> cantidadesIterator = cantidades.iterator();
+        while (codigosIterator.hasNext()){
+            cantidadesCombo.put(productos.get(codigosIterator.next()),cantidadesIterator.next());
+        }
+        float porcentaje = Float.parseFloat((String) jsonObject.get("porcentaje"));
+        String nombre = (String) jsonObject.get("nombre");
+        return new Combo(id, inicio, vencimiento, cantidadesCombo, porcentaje, nombre);
     }
 
 

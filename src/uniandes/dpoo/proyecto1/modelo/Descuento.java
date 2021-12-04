@@ -1,13 +1,13 @@
 package uniandes.dpoo.proyecto1.modelo;
 
-import java.util.Date;
+import java.util.*;
 
 public class Descuento extends Promocion{
     private Producto producto;
     private float porcentaje;
 
-    public Descuento(Date inicio, Date vencimiento, Producto producto, float porcentaje){
-        super(inicio,vencimiento);
+    public Descuento(String id, Date inicio, Date vencimiento, Producto producto, float porcentaje){
+        super(id, inicio,vencimiento);
         this.producto = producto;
         this.porcentaje = porcentaje;
     }
@@ -34,7 +34,7 @@ public class Descuento extends Promocion{
 
     @Override
     public String lineaRecibo(Recibo recibo) {
-        return "Descuento "+ producto.getNombre() + " "+ porcentaje +"%: -"+aplicarDescuento(recibo);
+        return "Descuento "+ producto.getNombre() + " "+ (porcentaje * 100) +"%: -"+aplicarDescuento(recibo);
     }
 
     @Override
@@ -45,5 +45,12 @@ public class Descuento extends Promocion{
             }
         }
         return false;
+    }
+
+    @Override
+    public Collection<Producto> getProductos() {
+        ArrayList<Producto> listaProductos = new ArrayList<>();
+        listaProductos.add(producto);
+        return listaProductos;
     }
 }

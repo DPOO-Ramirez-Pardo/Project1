@@ -52,6 +52,7 @@ public class POS extends ProcesamientoSupermercado{
         checkPedido();
         checkProducto();
         actualRecibo.agregarCantidadProducto(actualProducto, cantidad);
+        aplicarPromociones(actualProducto);
         actualProducto = null;
     }
 
@@ -90,12 +91,14 @@ public class POS extends ProcesamientoSupermercado{
         checkPedido();
         Producto producto = getProductoPorNombre(nombreProducto);
         actualRecibo.eliminarProducto(producto);
+        aplicarPromociones(producto);
     }
 
     public void eliminarProductoPorCodigo(int codigo) throws Exception {
         checkPedido();
         Producto producto = getProductoPorCodigo(codigo);
         actualRecibo.eliminarProducto(producto);
+        aplicarPromociones(producto);
     }
 
     public void iniciarPedido() throws Exception {
@@ -157,5 +160,18 @@ public class POS extends ProcesamientoSupermercado{
     public int getPuntosRedimidos() throws SinReciboActualException {
         if (actualRecibo == null) throw new SinReciboActualException();
         return actualRecibo.getPuntosRedimidos();
+    }
+
+    private void aplicarPromociones(Producto producto){
+        if (promocionPorProducto.containsKey(producto)){
+            ArrayList<Promocion> promociones = promocionPorProducto.get(producto);
+            for (Promocion promocion: promociones){
+                if (promocion.seAplica(actualRecibo, Calendar.getInstance().getTime())){
+                    actualRecibo.añadirPromocion(promocion);
+                } else {
+                    actualRecibo.eliminarPromocion(promocion);
+                }
+            }
+        }
     }
 }

@@ -1,8 +1,6 @@
 package uniandes.dpoo.proyecto1.modelo;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 public class Combo extends Promocion{
     private HashMap<Producto, Integer> cantidadesCombo;
@@ -10,8 +8,8 @@ public class Combo extends Promocion{
     private String nombre;
     private float costo;
 
-    public Combo(Date inicio, Date vencimiento, HashMap<Producto, Integer> cantidadesCombo, float porcentaje, String nombre) {
-        super(inicio, vencimiento);
+    public Combo(String id, Date inicio, Date vencimiento, HashMap<Producto, Integer> cantidadesCombo, float porcentaje, String nombre) {
+        super(id, inicio, vencimiento);
         this.cantidadesCombo = cantidadesCombo;
         this.porcentaje = porcentaje;
         this.nombre = nombre;
@@ -77,5 +75,10 @@ public class Combo extends Promocion{
             if (!bProducto) return false;
         }
         return true;
+    }
+
+    @Override
+    public Collection<Producto> getProductos() {
+        return cantidadesCombo.keySet();
     }
 }

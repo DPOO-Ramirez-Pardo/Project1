@@ -10,6 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class POSListaProductos extends JPanel implements ActionListener, ListSelectionListener {
     private POS pos;
@@ -19,7 +20,16 @@ public class POSListaProductos extends JPanel implements ActionListener, ListSel
     private POSPedidoMenu pedidoMenu;
     private Font listaFont;
 
-    private void estilizarLista(String lineasProductos[]){
+
+    private static final int NO_SECTION = 0;
+    private static final int CHOOSE_SECTION = 6;
+    private static final int CABEZA_SECTION = 1;
+    private static final int PRODUCTOS_SECTION = 2;
+    private static final int PROMOCIONES_SECTION = 3;
+    private static final int EXTRACTO_SECTION = 4;
+    private static final int PUNTOS_SECTION = 5;
+
+    private void estilizarLista(Object lineasProductos[]){
         remove(listaProductos);
         listaProductos = new JList(lineasProductos);
         listaProductos.setFixedCellWidth(200);
@@ -29,7 +39,7 @@ public class POSListaProductos extends JPanel implements ActionListener, ListSel
         listaProductos.setSelectionBackground(Color.ORANGE);
         listaProductos.setSelectionForeground(Color.WHITE);
         listaProductos.addListSelectionListener(this);
-        add(listaProductos);
+        add(listaProductos, BorderLayout.NORTH);
     }
 
     public void actualizarLista(){
@@ -46,41 +56,36 @@ public class POSListaProductos extends JPanel implements ActionListener, ListSel
 
     private void generarNuevaJListRecibo(String reciboString) {
         String lineasRecibo[] = reciboString.split("\n");
-        int relleno = 5;
-        int inicio = 1;
-        if(lineasRecibo[1].contains("cliente")){
-            relleno = 12;
-            inicio = 3;
-        }
-        if (lineasRecibo.length > relleno){
-            String lineasProductos[] = new String[lineasRecibo.length - relleno];
-            int finalLista = lineasRecibo.length - (relleno == 12 ? 9: 4);
-            for (int i = inicio; i < finalLista; i++){
-                lineasProductos[i - inicio] = lineasRecibo[i];
-            }
-            estilizarLista(lineasProductos);
-        } else{
-            remove(listaProductos);
-            listaProductos = new JList();
-        }
-        add(listaProductos, BorderLayout.NORTH);
-        finalRecibo.removeAll();
-        if (relleno == 12){
-            finalRecibo.setLayout(new GridLayout(8,1,0,1));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 8]));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 7]));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 6]));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 4]));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 3]));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 2]));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 1]));
-        } else {
-            finalRecibo.setLayout(new GridLayout(3,1,0,1));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 3]));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 2]));
-            finalRecibo.add(new JLabel(lineasRecibo[lineasRecibo.length - 1]));
-        }
+        ArrayList<String> lineasProductos = new ArrayList<>();
+        ArrayList<String> lineasFinal = new ArrayList<>();
+        int currentState = NO_SECTION;
+        for (int i = 0; i < lineasRecibo.length; i++) {
+            if (lineasRecibo[i].equals("-----")) currentState = CHOOSE_SECTION;
+            else if (currentState == CHOOSE_SECTION){
+                if (lineasRecibo[i].equals("Cabeza")) currentState = CABEZA_SECTION;
+                else if (lineasRecibo[i].equals("Productos")) currentState = PRODUCTOS_SECTION;
+                else if (lineasRecibo[i].equals("Promociones")) currentState = PROMOCIONES_SECTION;
+                else if (lineasRecibo[i].equals("Extracto")) currentState = EXTRACTO_SECTION;
+                else if (lineasRecibo[i].equals("Puntos")) currentState = PUNTOS_SECTION;
+                i++;
+            } else if (currentState == CABEZA_SECTION){
 
+            } else if (currentState == PRODUCTOS_SECTION){
+                if (!lineasRecibo[i].isEmpty()) lineasProductos.add(lineasRecibo[i]);
+            } else if (currentState == PROMOCIONES_SECTION ||
+                    currentState == EXTRACTO_SECTION || currentState == PUNTOS_SECTION){
+                if (!lineasRecibo[i].isEmpty()) lineasFinal.add(lineasRecibo[i]);
+            }
+        }
+        Object[] array;
+        if (lineasProductos.size() == 0) array = new Object[0];
+        else array = lineasProductos.toArray();
+        estilizarLista(array);
+        finalRecibo.removeAll();
+        finalRecibo.setLayout(new GridLayout(lineasFinal.size(),1,0,1));
+        for (int i = 0; i < lineasFinal.size(); i++) {
+            finalRecibo.add(new JLabel(lineasFinal.get(i)));
+        }
     }
 
     public POSListaProductos(POS pos, POSPedidoMenu pedidoMenu, JButton agregarProductoButton){

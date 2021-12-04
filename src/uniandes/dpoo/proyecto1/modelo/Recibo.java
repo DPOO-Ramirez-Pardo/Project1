@@ -6,18 +6,20 @@ import uniandes.dpoo.proyecto1.exceptions.SinPuntosSuficientesException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Recibo {
 	private Date fecha;
 	private Cliente cliente;
 	private ArrayList <CantidadProducto> cantidadesProductos;
+	private HashMap<Promocion, Number[]> promociones;
 	private float subtotal;
 	private int puntosAntes;
 	private int puntosRedimidos;
 
 
 
-	public Recibo (Date fecha, Cliente cliente, ArrayList<CantidadProducto> cantidadesProductos, float subtotal,
+	public Recibo (Date fecha, Cliente cliente, ArrayList<CantidadProducto> cantidadesProductos, ArrayList<Promocion> promociones, float subtotal,
 				   int puntosAntes, int puntosRedimidos){
 		this.fecha = fecha;
 		this.cliente = cliente;
@@ -25,10 +27,15 @@ public class Recibo {
 		this.subtotal = subtotal;
 		this.puntosAntes = puntosAntes;
 		this.puntosRedimidos = puntosRedimidos;
+		this.promociones = new HashMap<>();
+		for (Promocion promocion: promociones){
+			this.promociones.put(promocion,
+					new Number[] {promocion.aplicarDescuento(this), promocion.aplicarPuntos(this)});
+		}
 	}
 
 	public Recibo (Date fecha) {
-		this(fecha, null, new ArrayList<>(), 0, 0, 0);
+		this(fecha, null, new ArrayList<>(), new ArrayList<>(), 0, 0, 0);
 	}
 
 	public Cliente getCliente() {
@@ -55,6 +62,9 @@ public class Recibo {
 			try {builder.append(",").append(cantidadesProductos.get(i).getCantidad()).append(",")
 					.append(cantidadesProductos.get(i).getProducto().getCodigo()).append(",")
 					.append(cantidadesProductos.get(i).getCosto());} catch (Exception e) {}
+		}
+		for (Promocion promocion: promociones.keySet()) {
+			builder.append(',').append(promocion.getId());
 		}
 		return builder.append(",").append(subtotal).toString();
 	}
@@ -112,21 +122,50 @@ public class Recibo {
 	 */
 	public String generarRecibo() throws Exception {
 		StringBuilder builder = new StringBuilder();
+		generarSeccionCabeza(builder);
+		generarSeccionProductos(builder);
+		generarSeccionPromociones(builder);
+		generarSeccionExtracto(builder);
+		if (cliente != null) generarSeccionPuntos(builder);
+		return builder.toString();
+	}
+
+	private void generarSeccionPuntos(StringBuilder builder) {
+		builder.append("\n-----\n").append("Puntos").append("\n-----\n")
+				.append("Puntos Acumulados Antes de la Compra: ").append(puntosAntes)
+				.append("\n").append("Puntos Redimidos en la Compra: ").append(puntosRedimidos)
+				.append("\n").append("Puntos Acumulados en la Compra: ").append(getPuntosAcumulados())
+				.append("\n").append("Puntos Acumulados Después de la Compra: ").append(getPuntosDespues());
+	}
+
+	private void generarSeccionExtracto(StringBuilder builder) {
+		builder.append("\n-----\n").append("Extracto").append("\n-----\n");
+		float subtotal = getSubtotalDespuesDePromociones();
+		builder.append("subtotal: ").append(subtotal).append("\n")
+				.append("IVA: ").append(subtotal*0.19).append("\n")
+				.append("total: ").append(subtotal*1.19).append("\n");
+	}
+
+	private void generarSeccionCabeza(StringBuilder builder) {
+		builder.append("\n-----\n").append("Cabeza").append("\n-----\n");
 		builder.append("fecha: ").append(fecha).append("\n");
-		if (cliente != null) builder.append("cliente: ").append(cliente.getNombre()).append("\n-----\n");
+		if (cliente != null) builder.append("cliente: ").append(cliente.getNombre());
+	}
+
+	private void generarSeccionProductos(StringBuilder builder) throws Exception {
+		builder.append("\n-----\n").append("Productos").append("\n-----\n");
 		for (CantidadProducto cantidadProducto: cantidadesProductos) {
 			builder.append(cantidadProducto.getCantidad()).append(" ")
 					.append(cantidadProducto.getProducto().getNombre()).append(" ")
 					.append(cantidadProducto.getCosto()).append("\n");
 		}
-		builder.append("-----\nsubtotal: ").append(subtotal).append("\n")
-				.append("IVA: ").append(subtotal*0.19).append("\n")
-				.append("total: ").append(subtotal*1.19).append("\n");
-		if (cliente != null) builder.append("-----\n").append("Puntos Acumulados Antes de la Compra: ").append(puntosAntes)
-									.append("\n").append("Puntos Redimidos en la Compra: ").append(puntosRedimidos)
-									.append("\n").append("Puntos Acumulados en la Compra: ").append(getPuntosAcumulados())
-									.append("\n").append("Puntos Acumulados Después de la Compra: ").append(getPuntosDespues());
-		return builder.toString();
+	}
+
+	private void generarSeccionPromociones(StringBuilder builder) {
+		builder.append("\n-----\n").append("Promociones").append("\n-----\n");
+		for (Promocion promocion: promociones.keySet()){
+			builder.append(promocion.lineaRecibo(this)).append("\n");
+		}
 	}
 
 	/**
@@ -151,8 +190,9 @@ public class Recibo {
 		this.puntosRedimidos = 0;
     }
 
-	public void redimirPuntos(int puntosRedimidos) throws ClienteNoAñadidoException, PuntosMayoresTotalException, SinPuntosSuficientesException {
-		System.out.println(puntosRedimidos);
+	public void redimirPuntos(int puntosRedimidos) throws ClienteNoAñadidoException,
+			PuntosMayoresTotalException, SinPuntosSuficientesException {
+		float subtotal = getSubtotalDespuesDePromociones();
 		if (cliente == null) throw new ClienteNoAñadidoException();
 		else if (subtotal * 1.19 - puntosRedimidos * 15 <= -15) throw new PuntosMayoresTotalException(this);
 		else {
@@ -168,7 +208,12 @@ public class Recibo {
 	}
 
 	public int getPuntosAcumulados() {
-		return (int)((subtotal*1.19 - puntosRedimidos * 15) / 1000);
+		float subtotal = getSubtotalDespuesDePromociones();
+		int puntos = (int)((subtotal*1.19 - puntosRedimidos * 15) / 1000);
+		for (Number numbers[] : promociones.values()){
+			puntos += (Integer) numbers[1];
+		}
+		return puntos;
 	}
 
 	public int getPuntosRedimidos() {
@@ -176,6 +221,7 @@ public class Recibo {
 	}
 
 	public int maximoPuntosRedimidos() {
+		float subtotal = getSubtotalDespuesDePromociones();
 		if (cliente == null) return 0;
 		int puntosCompra = (int) (subtotal * 1.19 / 15);
 		if(subtotal * 1.19 - puntosCompra * 15 > 0) puntosCompra++;
@@ -184,5 +230,23 @@ public class Recibo {
 
 	public int getPuntosDespues(){
 		return puntosAntes + getPuntosAcumulados() - puntosRedimidos;
+	}
+
+	public void añadirPromocion(Promocion promocion) {
+		if (!promociones.containsKey(promocion)) promociones.put(promocion, new Number[]{0,0});
+		promociones.get(promocion)[0] = promocion.aplicarDescuento(this);
+		promociones.get(promocion)[1] = promocion.aplicarPuntos(this);
+	}
+
+	public void eliminarPromocion(Promocion promocion) {
+		promociones.remove(subtotal);
+	}
+
+	private float getSubtotalDespuesDePromociones(){
+		float customSubtotal = subtotal;
+		for (Number numbers[] : promociones.values()){
+			customSubtotal -= (Float) numbers[0];
+		}
+		return customSubtotal;
 	}
 }

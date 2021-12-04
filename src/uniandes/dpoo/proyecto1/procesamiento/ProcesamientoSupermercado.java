@@ -1,9 +1,6 @@
 package uniandes.dpoo.proyecto1.procesamiento;
 
-import uniandes.dpoo.proyecto1.modelo.Categoria;
-import uniandes.dpoo.proyecto1.modelo.Cliente;
-import uniandes.dpoo.proyecto1.modelo.Producto;
-import uniandes.dpoo.proyecto1.modelo.Recibo;
+import uniandes.dpoo.proyecto1.modelo.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,6 +16,8 @@ public abstract class ProcesamientoSupermercado {
     protected HashMap<Integer, Cliente> clientesPorCedula;
     protected ManejadorArchivos manejadorArchivos;
     protected ArrayList<Recibo> recibosSinCedula;
+    protected HashMap<Producto, ArrayList<Promocion>> promocionPorProducto;
+    protected HashMap<String, Promocion> promocionPorID;
 
     /**
      *
@@ -91,7 +90,7 @@ public abstract class ProcesamientoSupermercado {
         try {
             manejadorArchivos = new ManejadorArchivos("data/clientes.txt","data/categorias.txt",
                     "data/productos.txt", "data/lotes.txt", "data/recibos.txt",
-                    "data/comportamientos.txt");
+                    "data/comportamientos.txt", "promociones");
             productosPorCodigo = manejadorArchivos.getProductos();
             clientesPorCedula = manejadorArchivos.getClientes();
             categorias = manejadorArchivos.getCategorias();
@@ -100,11 +99,17 @@ public abstract class ProcesamientoSupermercado {
             for(Producto producto: productosPorCodigo.values()){
                 productosPorNombre.put(producto.getNombre(), producto);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            promocionPorProducto = new HashMap<>();
+            promocionPorID = manejadorArchivos.getPromocionesPorID();
+            for (Promocion promocion: promocionPorID.values()){
+                for (Producto producto: promocion.getProductos()){
+                    if (!promocionPorProducto.containsKey(producto)){
+                        promocionPorProducto.put(producto, new ArrayList<>());
+                    }
+                    promocionPorProducto.get(producto).add(promocion);
+                }
+            }
+        } catch (ParseException | IOException | org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
     }

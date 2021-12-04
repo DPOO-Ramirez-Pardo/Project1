@@ -1,14 +1,15 @@
 package uniandes.dpoo.proyecto1.modelo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 public class PuntosMultiplicados extends Promocion{
     private Producto producto;
     private int multiplicador;
 
-    public PuntosMultiplicados(Date inicio, Date vencimiento, Producto producto, int multiplicador){
-        super(inicio,vencimiento);
+    public PuntosMultiplicados(String id, Date inicio, Date vencimiento, Producto producto, int multiplicador){
+        super(id, inicio,vencimiento);
         this.producto = producto;
         this.multiplicador = multiplicador;
     }
@@ -46,5 +47,12 @@ public class PuntosMultiplicados extends Promocion{
             }
         }
         return false;
+    }
+
+    @Override
+    public Collection<Producto> getProductos() {
+        ArrayList<Producto> listaProductos = new ArrayList<>();
+        listaProductos.add(producto);
+        return listaProductos;
     }
 }

@@ -159,6 +159,9 @@ public class POSPedidoMenu extends JPanel implements ActionListener {
                 int cedula = Integer.parseInt(textoCedula);
                 if (pos.existeCliente(cedula)){
                     pos.añadirTitular(cedula);
+                    listaProductos.actualizarLista();
+                    this.revalidate();
+                    this.repaint();
                     JOptionPane.showMessageDialog(parent, "¡El Cliente fue añadido exitosamente!",
                             "¡Éxito!", JOptionPane.PLAIN_MESSAGE);
                 } else {
